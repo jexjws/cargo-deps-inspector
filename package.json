@@ -14,6 +14,7 @@
     "start": "pnpm -C packages/cargo-deps-inspector run start",
     "online:dev": "pnpm -C packages/cargo-deps-inspector run online:dev",
     "online:build": "pnpm -C packages/cargo-deps-inspector run online:build",
+    "pages:build": "CDI_DEPLOY_TARGET=cloudflare-pages pnpm online:build",
     "prepare": "npx simple-git-hooks && pnpm -C packages/cargo-deps-inspector run dev:prepare && skills-npm",
     "lint": "pnpm -C packages/cargo-deps-inspector run dev:prepare && eslint .",
     "test": "vitest",

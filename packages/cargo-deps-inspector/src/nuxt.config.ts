@@ -1,9 +1,11 @@
+import { rm } from 'node:fs/promises'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 import Inspect from 'vite-plugin-inspect'
 
 const NUXT_DEBUG_BUILD = !!process.env.NUXT_DEBUG_BUILD
 const backend = process.env.CDI_BACKEND ?? 'dev'
+const isCloudflarePagesBuild = process.env.CDI_DEPLOY_TARGET === 'cloudflare-pages'
 
 export default defineNuxtConfig({
   ssr: false,
@@ -71,6 +73,18 @@ export default defineNuxtConfig({
       },
     },
     sourcemap: false,
+    ...(isCloudflarePagesBuild
+      ? {
+          hooks: {
+            'prerender:done': async () => {
+              // Cloudflare Pages enables its SPA fallback only when no top-level
+              // 404.html exists. Other build targets keep Nuxt's generated 404.
+              const notFoundPage = fileURLToPath(new URL('../dist/public/404.html', import.meta.url))
+              await rm(notFoundPage, { force: true })
+            },
+          },
+        }
+      : {}),
   },
 
   app: {

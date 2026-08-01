@@ -2,27 +2,45 @@
 
 # Cargo Deps Inspector
 
-Cargo 依赖图可视化与诊断工具。它以 `cargo metadata --format-version=1` 为唯一解析来源，支持工作区、feature、target、依赖种类、源码来源和本地源码体积分析。
+[![npm version][npm-version-src]][npm-version-href]
+[![npm downloads][npm-downloads-src]][npm-downloads-href]
 
-## 快速开始
+English | [简体中文](./README.zh-CN.md)
 
-本项目仍以 npm 包分发，但分析对象只限 Cargo/Rust 项目：
+Visualize and diagnose resolved Cargo dependency graphs. Cargo Deps Inspector uses `cargo metadata --format-version=1` as its source of truth and understands workspaces, features, targets, dependency kinds, package sources, duplicate versions, and local source sizes.
+
+[Open the browser-only application](https://cargo-deps-inspector.pages.dev/)
+
+## Features
+
+- Explore dependencies in grid, graph, chart, compare, and report views.
+- Inspect resolved features, targets, normal/build/dev dependencies, and package sources.
+- Find crates resolved to multiple versions.
+- Measure local crate source sizes by source, test, documentation, and other files.
+- Run optional RustSec and outdated-dependency reports through `cargo-audit` and `cargo-outdated`.
+- Export an offline static site or import metadata into the browser-only application.
+- Expose read-only reports to agents through MCP.
+- Use the interface in English or Simplified Chinese.
+
+## Quick start
+
+The application is distributed as an npm package, but it only analyzes Cargo/Rust projects:
 
 ```bash
 pnpm dlx cargo-deps-inspector
-# 或
+# or
 npx cargo-deps-inspector
 ```
 
-如果可执行文件 `cargo-deps-inspector` 已在 `PATH` 中，也可以使用 Cargo 外部子命令形式：
+If `cargo-deps-inspector` is already available in `PATH`, it can also be invoked as a Cargo external subcommand:
 
 ```bash
 cargo deps-inspector
 ```
 
-默认会执行带 `--locked` 的 `cargo metadata`，因此不会创建或修改 `Cargo.lock`。确实需要 Cargo 更新锁文件时，必须显式传入 `--no-locked`。
+By default, the inspector runs `cargo metadata` with `--locked`, so it will not create or modify `Cargo.lock`. Pass `--no-locked` explicitly when Cargo is allowed to update the lockfile.
 
-常用解析参数：
+Common dependency-resolution options:
 
 ```bash
 cargo deps-inspector --features serde,cli
@@ -33,11 +51,11 @@ cargo deps-inspector --offline
 cargo deps-inspector --manifest-path crates/app/Cargo.toml
 ```
 
-Web UI 提供 grid、graph、chart、compare 和 reports 五类视图。基础分析只读取 Cargo 元数据与本机 crate 源码，不依赖 `cargo-audit` 或 `cargo-outdated`。
+The base dependency graph only reads Cargo metadata and local crate sources. It does not require `cargo-audit` or `cargo-outdated`.
 
-## 配置
+## Configuration
 
-在项目根目录创建 `cargo-deps-inspector.config.ts`：
+Create `cargo-deps-inspector.config.ts` in the project root:
 
 ```ts
 import { defineConfig } from 'cargo-deps-inspector'
@@ -57,9 +75,9 @@ export default defineConfig({
 })
 ```
 
-命令行显式参数优先于配置文件。`excludePackages` 与 `excludeDependenciesOf` 支持 crate 名称、`name@semver`、通配符和谓词函数。
+Explicit command-line options override the configuration file. `excludePackages` and `excludeDependenciesOf` accept crate names, `name@semver` selectors, glob patterns, and predicate functions.
 
-## CLI 报告
+## CLI reports
 
 ```bash
 cargo deps-inspector report duplicates
@@ -68,23 +86,23 @@ cargo deps-inspector report audit
 cargo deps-inspector report outdated
 ```
 
-所有报告均支持 `--json`。JSON 模式下结果写到 stdout，进度写到 stderr，可安全接入 `jq` 或 CI 管道。
+Every report supports `--json`. In JSON mode, results are written to stdout and progress is written to stderr, making the command safe to use with `jq` or in CI pipelines.
 
-- `duplicates`：同名 crate 被解析为多个版本。
-- `source-sizes`：本地 crate 源码目录体积与 Rust/测试/文档等分类。
-- `audit`：按需调用 `cargo audit --json` 并展示 RustSec 结果。
-- `outdated`：按需调用 `cargo outdated --workspace --format json`。
+- `duplicates`: crates with the same name resolved to multiple versions.
+- `source-sizes`: local crate directory sizes grouped into Rust source, tests, documentation, and other files.
+- `audit`: invokes `cargo audit --json` on demand and displays RustSec findings.
+- `outdated`: invokes `cargo outdated --workspace --format json` on demand.
 
-后两项是可选集成。工具未安装时会返回安装指引，基础图谱仍可正常工作：
+The last two integrations are optional. If a tool is unavailable, the inspector returns installation guidance while the base graph remains usable:
 
 ```bash
 cargo install cargo-audit --locked
 cargo install cargo-outdated --locked
 ```
 
-## 快照与浏览器导入
+## Snapshots and browser import
 
-在线构建不在浏览器内执行 Cargo，而是导入以下任一文件：
+The browser-only application cannot execute Cargo. Import either raw Cargo metadata or an enhanced inspector snapshot:
 
 ```bash
 cargo metadata --format-version=1 > metadata.json
@@ -92,22 +110,17 @@ cargo deps-inspector snapshot snapshot.json --yes
 cargo deps-inspector snapshot snapshot.json --audit --outdated --yes
 ```
 
-增强快照保留源码体积和可选报告，也会保留 Cargo 返回的绝对路径。交互式导出前会显示隐私确认；非 TTY 环境必须显式传入 `--yes`。分享前请检查文件内容。
+Enhanced snapshots retain source-size information and optional reports. They also contain absolute paths returned by Cargo. Interactive exports display a privacy confirmation, while non-TTY environments must pass `--yes`. Review a snapshot before sharing it.
 
-运行浏览器导入版：
+Imported files are parsed locally in the browser and are not uploaded to a server.
 
-```bash
-pnpm online:dev
-pnpm online:build
-```
-
-## 静态构建
+## Static export
 
 ```bash
 cargo deps-inspector build --out-dir dist/cargo-deps
 ```
 
-该命令生成可由任意静态服务器托管的 SPA，并内嵌本次 Cargo 图谱。`cargo-audit` 与 `cargo-outdated` 仍保持按需执行；纯静态页面不会尝试运行本机命令。
+This creates a static SPA that can be hosted by any static file server, with the current Cargo graph embedded. Optional `cargo-audit` and `cargo-outdated` reports still run only when requested; the generated site never attempts to execute local commands.
 
 ## MCP
 
@@ -115,30 +128,31 @@ cargo deps-inspector build --out-dir dist/cargo-deps
 cargo deps-inspector mcp
 ```
 
-通过 devframe 的 stdio MCP 适配器公开以下只读工具：
+The devframe stdio MCP adapter exposes these read-only tools:
 
 - `cargo-deps-inspector:report-duplicates`
 - `cargo-deps-inspector:report-source-sizes`
 - `cargo-deps-inspector:report-audit`
 - `cargo-deps-inspector:report-outdated`
 
-同一进程内会缓存 Cargo 图谱与外部报告；传入 `force` 可刷新按需报告。
+The Cargo graph and external reports are cached within the process. Pass `force` to refresh an on-demand report.
 
-## 开发
+## Documentation
 
-```bash
-pnpm install
-pnpm dev
-pnpm test
-pnpm typecheck
-pnpm lint
-pnpm build
-```
+- [Development, testing, release, and deployment guide](./DEVELOPMENT.md)
+- [中文开发指南](./DEVELOPMENT.zh-CN.md)
 
-仓库自带 `test/fixtures/cargo-workspace`，开发配置默认检查该 fixture。
+## Acknowledgements
 
-## 致谢与许可证
+Cargo Deps Inspector began as an adaptation of [Node Modules Inspector](https://github.com/antfu/node-modules-inspector), developed with assistance from `gpt-5.6-sol xhigh`. Its interface and architecture retain important ideas from the original project and devframe.
 
-本项目使用 `gpt-5.6-sol xhigh` 基于 Node Modules Inspector Vide 而来，界面与架构保留了原项目及 devframe 的重要设计经验。
+## License
 
-[MIT](./LICENSE)
+[MIT](./LICENSE.md)
+
+<!-- Badges -->
+
+[npm-version-src]: https://img.shields.io/npm/v/cargo-deps-inspector?style=flat&colorA=080f12&colorB=1fa669
+[npm-version-href]: https://npmjs.com/package/cargo-deps-inspector
+[npm-downloads-src]: https://img.shields.io/npm/dm/cargo-deps-inspector?style=flat&colorA=080f12&colorB=1fa669
+[npm-downloads-href]: https://npmjs.com/package/cargo-deps-inspector

@@ -13,3 +13,77 @@ jobs:
     permissions:
       contents: write
       id-token: write
+
+  deploy-pages:
+    name: Deploy website to Cloudflare Pages
+    needs: release
+    if: ${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME != '' }}
+    runs-on: ubuntu-latest
+    concurrency:
+      group: cloudflare-pages-production
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      deployments: write
+    environment:
+      name: cloudflare-pages
+      url: ${{ steps.deploy.outputs.deployment-url }}
+    steps:
+      - name: Check Pages credentials
+        id: pages-config
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [[ -n "$CLOUDFLARE_ACCOUNT_ID" && -n "$CLOUDFLARE_API_TOKEN" ]]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Cloudflare Pages deployment skipped because its repository secrets are incomplete."
+          fi
+
+      - name: Checkout release tag
+        if: ${{ steps.pages-config.outputs.ready == 'true' }}
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        if: ${{ steps.pages-config.outputs.ready == 'true' }}
+        uses: pnpm/action-setup@v4
+
+      - name: Set Node.js
+        if: ${{ steps.pages-config.outputs.ready == 'true' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        if: ${{ steps.pages-config.outputs.ready == 'true' }}
+        run: pnpm install --frozen-lockfile
+
+      - name: Build browser-only website
+        if: ${{ steps.pages-config.outputs.ready == 'true' }}
+        run: pnpm pages:build
+
+      - name: Verify Pages SPA output
+        if: ${{ steps.pages-config.outputs.ready == 'true' }}
+        run: |
+          test -f packages/cargo-deps-inspector/dist/public/index.html
+          test ! -e packages/cargo-deps-inspector/dist/public/404.html
+
+      - name: Deploy production website
+        if: ${{ steps.pages-config.outputs.ready == 'true' }}
+        id: deploy
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          packageManager: pnpm
+          wranglerVersion: 4.118.0
+          command: >-
+            pages deploy packages/cargo-deps-inspector/dist/public
+            --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT_NAME }}
+            --branch=main
+            --commit-hash=${{ github.sha }}
+            --commit-dirty=false
