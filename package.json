@@ -57,7 +57,8 @@
     "vite": "catalog:bundling",
     "vite-plugin-inspect": "catalog:dev",
     "vitest": "catalog:testing",
-    "vue-tsc": "catalog:dev"
+    "vue-tsc": "catalog:dev",
+    "wrangler": "catalog:dev"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm i --frozen-lockfile --ignore-scripts --offline && pnpm exec nano-staged"
