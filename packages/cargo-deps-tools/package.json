@@ -1,7 +1,7 @@
 {
   "name": "cargo-deps-tools",
   "type": "module",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "Tools for inspecting resolved Cargo dependency graphs",
   "author": "jexjws",
   "license": "MIT",
