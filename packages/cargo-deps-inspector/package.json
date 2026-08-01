@@ -1,7 +1,7 @@
 {
   "name": "cargo-deps-inspector",
   "type": "module",
-  "version": "2.3.3",
+  "version": "2.3.4",
   "description": "Visualize and report resolved Cargo dependency graphs",
   "author": "jexjws",
   "license": "MIT",
