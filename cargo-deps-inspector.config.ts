@@ -3,7 +3,7 @@ import { defineConfig } from './packages/cargo-deps-inspector/src/node/index'
 export default defineConfig({
   name: 'cargo-deps-inspector',
   cargo: {
-    manifestPath: '/home/voyage200/Projects/FlightStudio/third-party/rust/Cargo.toml',
+    manifestPath: 'test/fixtures/cargo-workspace/Cargo.toml',
     locked: true,
   },
   externalTools: {
