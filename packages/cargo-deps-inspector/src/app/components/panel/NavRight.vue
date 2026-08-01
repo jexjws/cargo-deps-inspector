@@ -3,12 +3,20 @@ import type { SupportedLocale } from '../../locales'
 import { vClosePopper, Menu as VMenu } from 'floating-vue'
 import { useI18n } from 'vue-i18n'
 import { toggleDark } from '../../composables/dark'
-import { localeOptions } from '../../locales'
+import { LOCALE_PREFERENCE_STORAGE_KEY, LOCALE_STORAGE_KEY, localeOptions } from '../../locales'
 
 const { locale, t } = useI18n()
 
 function selectLocale(value: SupportedLocale) {
   locale.value = value
+
+  try {
+    localStorage.setItem(LOCALE_STORAGE_KEY, value)
+    localStorage.setItem(LOCALE_PREFERENCE_STORAGE_KEY, 'true')
+  }
+  catch {
+    // Language switching should still work when browser storage is unavailable.
+  }
 }
 </script>
 

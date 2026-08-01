@@ -44,8 +44,8 @@ test.describe('build mode (static export)', () => {
     await page.goto('/grid/depth')
     await expect(page.locator(navLink('/grid')).first()).toBeVisible({ timeout: 30_000 })
 
-    const languageButton = page.getByRole('button', { name: '语言' })
-    const darkModeButton = page.getByRole('button', { name: '切换深色模式' })
+    const languageButton = page.getByRole('button', { name: 'Language' })
+    const darkModeButton = page.getByRole('button', { name: 'Toggle dark mode' })
     const [languageBox, darkModeBox] = await Promise.all([
       languageButton.boundingBox(),
       darkModeButton.boundingBox(),
@@ -55,22 +55,42 @@ test.describe('build mode (static export)', () => {
     expect(languageBox!.x).toBeLessThan(darkModeBox!.x)
 
     await languageButton.click()
-    await expect(page.getByRole('menuitemradio', { name: '简体中文' })).toHaveAttribute('aria-checked', 'true')
-    await page.getByRole('menuitemradio', { name: 'English' }).click()
-    await expect(page.getByRole('menu')).toBeHidden()
-    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
-    await expect(page.locator(navLink('/graph')).first()).toHaveAttribute('title', 'Graph View')
-    await expect.poll(() => page.evaluate(() => localStorage.getItem('cargo-deps-inspector-locale'))).toBe('en')
-
-    await page.reload()
-    await expect(page.getByRole('button', { name: 'Language' })).toBeVisible()
-    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
-
-    await page.getByRole('button', { name: 'Language' }).click()
     await expect(page.getByRole('menuitemradio', { name: 'English' })).toHaveAttribute('aria-checked', 'true')
     await page.getByRole('menuitemradio', { name: '简体中文' }).click()
     await expect(page.getByRole('menu')).toBeHidden()
     await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
     await expect(page.locator(navLink('/graph')).first()).toHaveAttribute('title', '依赖图')
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('cargo-deps-inspector-locale'))).toBe('zh-CN')
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('cargo-deps-inspector-locale-explicit'))).toBe('true')
+
+    await page.reload()
+    await expect(page.getByRole('button', { name: '语言' })).toBeVisible()
+    await expect(page.locator('html')).toHaveAttribute('lang', 'zh-CN')
+
+    await page.getByRole('button', { name: '语言' }).click()
+    await expect(page.getByRole('menuitemradio', { name: '简体中文' })).toHaveAttribute('aria-checked', 'true')
+    await page.getByRole('menuitemradio', { name: 'English' }).click()
+    await expect(page.getByRole('menu')).toBeHidden()
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+    await expect(page.locator(navLink('/graph')).first()).toHaveAttribute('title', 'Graph View')
+  })
+
+  test('uses the browser language when no preference has been selected', async ({ browser, baseURL }) => {
+    const cases = [
+      { browserLocale: 'en-GB', locale: 'en', languageButton: 'Language' },
+      { browserLocale: 'zh-CN', locale: 'zh-CN', languageButton: '语言' },
+    ]
+
+    for (const current of cases) {
+      const context = await browser.newContext({ baseURL, locale: current.browserLocale })
+      const localePage = await context.newPage()
+
+      await localePage.goto('/grid/depth')
+      await expect(localePage.getByRole('button', { name: current.languageButton })).toBeVisible({ timeout: 30_000 })
+      await expect(localePage.locator('html')).toHaveAttribute('lang', current.locale)
+      await expect.poll(() => localePage.evaluate(() => localStorage.getItem('cargo-deps-inspector-locale'))).toBeNull()
+
+      await context.close()
+    }
   })
 })

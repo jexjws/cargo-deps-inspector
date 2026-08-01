@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { isSupportedLocale, localeOptions, messages, supportedLocales } from '.'
+import {
+  isSupportedLocale,
+  localeOptions,
+  messages,
+  resolveInitialLocale,
+  resolvePreferredLocale,
+  supportedLocales,
+} from '.'
 
 function flattenKeys(value: Record<string, unknown>, prefix = ''): string[] {
   return Object.entries(value).flatMap(([key, child]) => {
@@ -24,5 +31,20 @@ describe('i18n messages', () => {
     expect(isSupportedLocale('zh-CN')).toBe(true)
     expect(isSupportedLocale('zh')).toBe(false)
     expect(isSupportedLocale(undefined)).toBe(false)
+  })
+
+  it('negotiates supported browser languages in preference order', () => {
+    expect(resolvePreferredLocale(['en-GB'])).toBe('en')
+    expect(resolvePreferredLocale(['zh-CN'])).toBe('zh-CN')
+    expect(resolvePreferredLocale(['zh_Hans_SG'])).toBe('zh-CN')
+    expect(resolvePreferredLocale(['ja-JP', 'zh-CN', 'en-US'])).toBe('zh-CN')
+    expect(resolvePreferredLocale(['zh-TW', 'en-US'])).toBe('en')
+    expect(resolvePreferredLocale(['ja-JP'])).toBe('en')
+  })
+
+  it('uses only explicitly selected stored locales', () => {
+    expect(resolveInitialLocale('zh-CN', true, ['en-US'])).toBe('zh-CN')
+    expect(resolveInitialLocale('zh-CN', false, ['en-US'])).toBe('en')
+    expect(resolveInitialLocale('unsupported', true, ['zh-CN'])).toBe('zh-CN')
   })
 })

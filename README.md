@@ -27,9 +27,12 @@ Visualize and diagnose resolved Cargo dependency graphs. Cargo Deps Inspector us
 The application is distributed as an npm package, but it only analyzes Cargo/Rust projects:
 
 ```bash
+# Change to the directory containing Cargo.toml before running
 pnpm dlx cargo-deps-inspector
 # or
 npx cargo-deps-inspector
+# or
+bunx cargo-deps-inspector
 ```
 
 If `cargo-deps-inspector` is already available in `PATH`, it can also be invoked as a Cargo external subcommand:

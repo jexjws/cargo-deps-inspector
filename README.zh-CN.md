@@ -27,9 +27,12 @@ Cargo 依赖图可视化与诊断工具。Cargo Deps Inspector 以 `cargo metada
 本项目通过 npm 包分发，但只分析 Cargo/Rust 项目：
 
 ```bash
+# 切换到 Cargo.toml 所在的文件夹后运行
 pnpm dlx cargo-deps-inspector
 # 或
 npx cargo-deps-inspector
+# 或
+bunx cargo-deps-inspector
 ```
 
 如果 `cargo-deps-inspector` 已在 `PATH` 中，也可以使用 Cargo 外部子命令形式：
