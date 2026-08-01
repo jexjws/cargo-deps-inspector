@@ -21,7 +21,7 @@ import { query } from '../../state/query'
     <div v-if="filters.state.dependencyKinds?.length" border="l base" flex="~ gap-1 items-center" px2 font-mono text-sm>
       {{ filters.state.dependencyKinds.join(', ') }}
     </div>
-    <button v-tooltip="'清除筛选'" w8 h8 rounded-full hover:bg-active op-fade hover:op100 flex="~ items-center justify-center" @click="filters.select.reset()">
+    <button v-tooltip="$t('filters.clear')" :aria-label="$t('filters.clear')" w8 h8 rounded-full hover:bg-active op-fade hover:op100 flex="~ items-center justify-center" @click="filters.select.reset()">
       <div i-ph-x />
     </button>
   </div>

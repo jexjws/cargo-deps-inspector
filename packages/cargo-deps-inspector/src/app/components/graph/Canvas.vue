@@ -383,24 +383,24 @@ onMounted(() => {
 
       <div bg-glass rounded-full border border-base shadow>
         <button
-          v-tooltip.left="'Zoom In (Ctrl + =)'"
+          v-tooltip.left="$t('graph.zoomIn')"
           :disabled="scale >= ZOOM_MAX"
           w-10 h-10 rounded-full hover:bg-active op-fade
           hover:op100 disabled:op20 disabled:bg-none
           disabled:cursor-not-allowed
           flex="~ items-center justify-center"
-          title="Zoom In (Ctrl + =)"
+          :title="$t('graph.zoomIn')"
           @click="zoomIn()"
         >
           <div i-ph-magnifying-glass-plus-duotone />
         </button>
         <button
-          v-tooltip.left="'Zoom Out (Ctrl + -)'"
+          v-tooltip.left="$t('graph.zoomOut')"
           :disabled="scale <= ZOOM_MIN"
           w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
           disabled:op20 disabled:bg-none disabled:cursor-not-allowed
           flex="~ items-center justify-center"
-          title="Zoom Out (Ctrl + -)"
+          :title="$t('graph.zoomOut')"
           @click="zoomOut()"
         >
           <div i-ph-magnifying-glass-minus-duotone />
@@ -409,10 +409,10 @@ onMounted(() => {
 
       <div bg-glass rounded-full border border-base shadow>
         <button
-          v-tooltip.left="'Toggle Graph Render Mode'"
+          v-tooltip.left="$t('graph.toggleRender')"
           w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
           flex="~ items-center justify-center"
-          title="Toggle Graph Render Mode"
+          :title="$t('graph.toggleRender')"
           @click="toggleRender"
         >
           <div v-if="settings.graphRender === 'dots'" i-ph-dots-nine-duotone />
@@ -422,10 +422,10 @@ onMounted(() => {
 
       <div bg-glass rounded-full border border-base shadow>
         <button
-          v-tooltip.left="'Download Screenshot as PNG'"
+          v-tooltip.left="$t('graph.downloadPng')"
           w-10 h-10 rounded-full hover:bg-active op-fade hover:op100
           flex="~ items-center justify-center"
-          title="Download Screenshot as PNG"
+          :title="$t('graph.downloadPng')"
           @click="takeScreenshot"
         >
           <div i-ph-download-duotone />

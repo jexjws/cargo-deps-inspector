@@ -31,7 +31,7 @@ function onCommitted(node: PackageNode) {
           <input
             ref="el"
             v-model="input"
-            placeholder="Goto"
+            :placeholder="$t('filters.searchPlaceholder')"
             w-full bg-transparent outline-none
             @keydown="onEnter"
           >

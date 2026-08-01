@@ -37,7 +37,7 @@ function showDuplicatedGraph(packages: PackageNode[]) {
     <div flex="~ items-center wrap gap-2">
       <DisplayVersion :version="pkg.version" prefix="v" badge-color-gray rounded px2 />
       <div v-if="pkg.workspace" badge-color-lime px2 rounded text-sm>
-        Workspace
+        {{ $t('details.workspace') }}
       </div>
       <DisplaySourceTypeBadge :pkg />
       <div badge-color-gray px2 rounded text-sm font-mono>
@@ -45,7 +45,7 @@ function showDuplicatedGraph(packages: PackageNode[]) {
       </div>
       <VMenu v-if="duplicated" font-mono>
         <div pl2 pr1 rounded bg-rose:10 text-rose text-sm flex="~ items-center gap-1">
-          {{ duplicated.length }} 个版本<div i-ph-caret-down text-xs />
+          {{ $t('details.versions', { count: duplicated.length }) }}<div i-ph-caret-down text-xs />
         </div>
         <template #popper>
           <div flex="~ col" p1>
@@ -55,23 +55,23 @@ function showDuplicatedGraph(packages: PackageNode[]) {
             </button>
             <div border="t base" my1 />
             <button py1 px2 rounded flex="~ items-center gap-1" hover="bg-active" @click="showDuplicatedGraph(duplicated)">
-              <div i-ph-graph-duotone /><span text-sm>在图谱中比较</span>
+              <div i-ph-graph-duotone /><span text-sm>{{ $t('details.compareGraph') }}</span>
             </button>
           </div>
         </template>
       </VMenu>
       <div flex-auto />
       <div flex="~ gap--1 items-center">
-        <a v-if="cratesUrl" v-tooltip="'在 crates.io 打开'" :href="cratesUrl" target="_blank" w-8 h-8 rounded-full hover:bg-active flex><div i-simple-icons-rust ma /></a>
-        <a v-if="pkg.metadata.repository" v-tooltip="'打开代码仓库'" :href="pkg.metadata.repository" target="_blank" w-8 h-8 rounded-full hover:bg-active flex><div i-catppuccin-git ma /></a>
-        <a v-if="docsUrl" v-tooltip="'打开文档'" :href="docsUrl" target="_blank" w-8 h-8 rounded-full hover:bg-active flex><div i-ph-book-open-text-duotone ma /></a>
-        <button v-if="backend.functions.openInEditor" v-tooltip="'打开 Cargo.toml'" w-8 h-8 rounded-full hover:bg-active flex @click="backend.functions.openInEditor?.(pkg.manifestPath)">
+        <a v-if="cratesUrl" v-tooltip="$t('details.openCratesIo')" :aria-label="$t('details.openCratesIo')" :href="cratesUrl" target="_blank" w-8 h-8 rounded-full hover:bg-active flex><div i-simple-icons-rust ma /></a>
+        <a v-if="pkg.metadata.repository" v-tooltip="$t('details.openRepository')" :aria-label="$t('details.openRepository')" :href="pkg.metadata.repository" target="_blank" w-8 h-8 rounded-full hover:bg-active flex><div i-catppuccin-git ma /></a>
+        <a v-if="docsUrl" v-tooltip="$t('details.openDocs')" :aria-label="$t('details.openDocs')" :href="docsUrl" target="_blank" w-8 h-8 rounded-full hover:bg-active flex><div i-ph-book-open-text-duotone ma /></a>
+        <button v-if="backend.functions.openInEditor" v-tooltip="$t('details.openManifest')" :aria-label="$t('details.openManifest')" w-8 h-8 rounded-full hover:bg-active flex @click="backend.functions.openInEditor?.(pkg.manifestPath)">
           <div i-ph-file-code-duotone ma />
         </button>
       </div>
     </div>
     <div v-if="pkg.metadata.license || pkg.metadata.rust_version" flex="~ gap-2 wrap items-center" text-sm>
-      <span v-if="pkg.metadata.license" op-fade>许可证 <code>{{ pkg.metadata.license }}</code></span>
+      <span v-if="pkg.metadata.license" op-fade>{{ $t('details.license') }} <code>{{ pkg.metadata.license }}</code></span>
       <span v-if="pkg.metadata.rust_version" op-fade>MSRV <code>{{ pkg.metadata.rust_version }}</code></span>
     </div>
   </div>

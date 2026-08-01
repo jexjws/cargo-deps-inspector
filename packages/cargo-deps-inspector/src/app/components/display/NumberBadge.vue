@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = withDefaults(
   defineProps<{
@@ -15,16 +16,17 @@ const props = withDefaults(
     format: 'locale',
   },
 )
+const { locale } = useI18n()
 
 const formatted = computed(() => {
   if (props.format === 'percent') {
-    return Number(props.number).toLocaleString(undefined, {
+    return Number(props.number).toLocaleString(locale.value, {
       style: 'percent',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })
   }
-  return Number(props.number).toLocaleString()
+  return Number(props.number).toLocaleString(locale.value)
 })
 </script>
 

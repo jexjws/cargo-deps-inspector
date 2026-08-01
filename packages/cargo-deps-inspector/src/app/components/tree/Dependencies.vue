@@ -55,7 +55,7 @@ const groups = computed(() => {
             <TreeDependencies ml4 :currents="entry.children" :list :type :seen :depth="depth + 1" :max-depth />
           </RenderNextTick>
           <div v-else-if="maxDepth > 2" ml6>
-            <span op-fade px2 bg-active rounded text-sm>{{ entry.children.length }} more ···</span>
+            <span op-fade px2 bg-active rounded text-sm>{{ $t('tree.more', { count: entry.children.length }) }}</span>
           </div>
         </template>
       </template>

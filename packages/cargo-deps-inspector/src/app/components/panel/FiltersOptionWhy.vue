@@ -7,9 +7,9 @@ import { filters } from '../../state/filters'
     <div flex="~ gap-2 items-center">
       <div i-ph-seal-question-duotone flex-none />
       <div>
-        <div>Why</div>
+        <div>{{ $t('filters.whyTitle') }}</div>
         <div op-fade text-sm mt--0.5>
-          Filter dependents to see why packages are used
+          {{ $t('filters.whyDescription') }}
         </div>
       </div>
     </div>

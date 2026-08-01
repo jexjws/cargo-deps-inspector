@@ -23,9 +23,9 @@ function showGraph(packages: PackageNode[]) {
 
 <template>
   <template v-if="duplicated.length">
-    <UiSubTitle>重复版本 crate <DisplayNumberBadge :number="duplicated.length" rounded-full text-sm /></UiSubTitle>
+    <UiSubTitle>{{ $t('reports.duplicateTitle') }} <DisplayNumberBadge :number="duplicated.length" rounded-full text-sm /></UiSubTitle>
     <div badge-color-primary flex="~ gap-2 items-center" rounded-lg p2 my2 px3>
-      <div i-ph-lightbulb-duotone /><span>Cargo 可能因版本约束或来源不同保留多个版本；请结合反向依赖判断是否能够统一约束。</span>
+      <div i-ph-lightbulb-duotone /><span>{{ $t('reports.duplicateHint') }}</span>
     </div>
     <div grid="~ cols-minmax-200px gap-4">
       <div v-for="packages of duplicated" :key="packages[0]!.name" border="~ base rounded-lg" bg-glass flex="~ col" :class="selectedNode && packages.includes(selectedNode) ? 'border-primary ring-4 ring-primary:20' : ''">
@@ -33,7 +33,7 @@ function showGraph(packages: PackageNode[]) {
           <h2 font-mono flex-auto pl2>
             {{ packages[0]!.name }}
           </h2>
-          <button v-tooltip="'在图谱中比较'" p1 rounded-full op-fade hover:bg-active hover:text-primary hover:op100 @click="showGraph(packages)">
+          <button v-tooltip="$t('details.compareGraph')" :aria-label="$t('details.compareGraph')" p1 rounded-full op-fade hover:bg-active hover:text-primary hover:op100 @click="showGraph(packages)">
             <div i-ph-graph-duotone text-lg />
           </button>
         </div>
@@ -45,5 +45,5 @@ function showGraph(packages: PackageNode[]) {
       </div>
     </div>
   </template>
-  <UiEmptyState v-else type="checkmark" title="没有重复版本" message="当前依赖图中每个 crate 只有一个已解析版本" />
+  <UiEmptyState v-else type="checkmark" :title="$t('reports.noDuplicates')" :message="$t('reports.noDuplicatesMessage')" />
 </template>

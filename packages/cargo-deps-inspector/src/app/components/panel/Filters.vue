@@ -10,7 +10,7 @@ import { filters } from '../../state/filters'
         @click="filters.select.reset()"
       >
         <div i-ph-funnel-x-duotone />
-        重置筛选
+        {{ $t('filters.reset') }}
       </button>
     </div>
 
@@ -23,7 +23,7 @@ import { filters } from '../../state/filters'
         <div i-ph-text-t-duotone text-lg :class="filters.state.search ? 'text-primary' : 'op-fade'" flex-none />
         <input
           v-model="filters.state.search"
-          placeholder="按名称、版本、作者、许可证或关键字筛选"
+          :placeholder="$t('filters.searchPlaceholder')"
           w-full bg-transparent outline-none
         >
         <button

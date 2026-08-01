@@ -1,20 +1,10 @@
 <script setup lang="ts">
 import type { CargoFileCategory, PackageNode } from 'cargo-deps-tools'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{ pkg: PackageNode }>()
-
-const labels: Record<CargoFileCategory, string> = {
-  rust: 'Rust',
-  manifest: 'Manifest',
-  docs: 'Docs',
-  tests: 'Tests',
-  examples: 'Examples',
-  benches: 'Benches',
-  assets: 'Assets',
-  build: 'Build',
-  other: 'Other',
-}
+const { t } = useI18n()
 const classes: Record<CargoFileCategory, string> = {
   rust: 'badge-color-primary',
   manifest: 'badge-color-amber',
@@ -31,10 +21,10 @@ const nodes = computed(() => Object.entries(props.pkg.resolved.sourceSize?.categ
   .filter((entry): entry is [CargoFileCategory, { bytes: number, count: number }] => Boolean(entry[1]?.bytes))
   .sort((a, b) => b[1].bytes - a[1].bytes)
   .map(([category, info]) => ({
-    name: labels[category],
+    name: t(`sourceCategory.${category}`),
     value: info.bytes,
     class: classes[category],
-    title: `${labels[category]}: ${info.count} files`,
+    title: `${t(`sourceCategory.${category}`)}: ${t('common.files', { count: info.count })}`,
   })))
 </script>
 

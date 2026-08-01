@@ -6,11 +6,11 @@ import { filters } from '../../state/filters'
   <div flex="~ col gap-2" p4 border="t base">
     <div flex="~ gap-2 items-center">
       <div i-ph-network-slash-duotone flex-none />
-      <div>排除项</div>
+      <div>{{ $t('filters.excludeTitle') }}</div>
       <div flex-auto />
       <button btn-action :disabled="filters.exclude.activated.length === 0" @click="filters.exclude.reset()">
         <div i-ph-trash-simple-duotone />
-        重置
+        {{ $t('common.reset') }}
       </button>
     </div>
     <div v-if="filters.state.excludes?.length" flex="~ gap-2 wrap">
@@ -24,9 +24,9 @@ import { filters } from '../../state/filters'
       </div>
     </div>
     <div v-else op-fade text-sm italic>
-      在 crate 详情中可排除指定 crate 及其引入的依赖。
+      {{ $t('filters.noExclusions') }}
     </div>
-    <OptionItem title="排除工作区成员" description="保留第三方依赖，只隐藏 workspace crate">
+    <OptionItem :title="$t('filters.excludeWorkspace')" :description="$t('filters.excludeWorkspaceDescription')">
       <OptionCheckbox v-model="filters.state.excludeWorkspace" />
     </OptionItem>
   </div>

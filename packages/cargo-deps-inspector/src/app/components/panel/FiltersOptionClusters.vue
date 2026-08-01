@@ -31,9 +31,9 @@ const models = Object.fromEntries(kinds.map(item => [item.value, modelFor(item.v
     <div flex="~ gap-2 items-center">
       <div i-ph-git-branch-duotone flex-none />
       <div>
-        <div>依赖类型</div>
+        <div>{{ $t('filters.dependencyKindTitle') }}</div>
         <div op-fade text-sm mt--0.5>
-          normal、dev 与 build 依赖
+          {{ $t('filters.dependencyKindDescription') }}
         </div>
       </div>
     </div>

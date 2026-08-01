@@ -48,7 +48,8 @@ const top = computed(() => {
       <DisplayNumberBadge v-if="list.length" :number="list.length" rounded-full text-sm />
       <button
         v-if="reversable"
-        title="Reverse"
+        :title="$t('common.reverse')"
+        :aria-label="$t('common.reverse')"
         ml-a w-8 h-8 rounded-full hover:bg-active flex
         @click="reverse = !reverse"
       >
@@ -73,7 +74,7 @@ const top = computed(() => {
           @click="count = Math.round(count * 1.5)"
         >
           <div i-ri:arrow-down-double-line />
-          <span>More</span>
+          <span>{{ $t('common.more') }}</span>
           <DisplayNumberBadge prefix="+" :number="Math.min(Math.round(count * 0.5), props.list.length)" rounded-full text-sm />
         </button>
         <button
@@ -84,7 +85,7 @@ const top = computed(() => {
           @click="count = props.list.length"
         >
           <div i-ph-arrows-out-line-vertical-duotone />
-          <span>All</span>
+          <span>{{ $t('common.all') }}</span>
           <DisplayNumberBadge :number="props.list.length" rounded-full text-sm />
         </button>
       </div>

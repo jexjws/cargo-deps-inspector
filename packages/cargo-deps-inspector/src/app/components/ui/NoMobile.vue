@@ -15,16 +15,15 @@ const shouldShow = computed(() => isMobile.value && !override.value)
     flex="~ col gap-2 items-center justify-center"
   >
     <div class="text-2xl">
-      Mobile is Not Supported
+      {{ $t('mobile.title') }}
     </div>
     <div text-center op75>
-      The layout is not optimized for mobile devices.<br>
-      Please use a desktop browser or wider screen.
+      {{ $t('mobile.description') }}
     </div>
     <div border="t base" p4 flex="~ gap-2 items-center" mt-5>
       <button btn-action @click="override = true">
         <div i-ph-door-open-duotone />
-        Let me use it Anyway
+        {{ $t('mobile.continue') }}
       </button>
     </div>
   </div>

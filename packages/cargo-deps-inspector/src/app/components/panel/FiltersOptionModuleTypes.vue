@@ -33,9 +33,9 @@ const models = Object.fromEntries(sources.map(item => [item.value, modelFor(item
     <div flex="~ gap-2 items-center">
       <div i-ph-database-duotone flex-none />
       <div>
-        <div>依赖来源</div>
+        <div>{{ $t('filters.sourceTitle') }}</div>
         <div op-fade text-sm mt--0.5>
-          按 Cargo 解析后的源码来源筛选
+          {{ $t('filters.sourceDescription') }}
         </div>
       </div>
     </div>

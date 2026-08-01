@@ -9,15 +9,15 @@ const packages = computed(() => payloads.filtered.packages
 </script>
 
 <template>
-  <ReportExpendableContainer v-if="packages.length" :list="packages" :title="['传递依赖最多', '传递依赖最少']">
+  <ReportExpendableContainer v-if="packages.length" :list="packages" :title="[$t('reports.mostTransitive'), $t('reports.leastTransitive')]">
     <template #default="{ items }">
       <div grid="~ cols-[1fr_max-content_max-content_max-content] gap-x-4 gap-y-1 items-center">
         <div /><div text-sm op-fade>
-          直接
+          {{ $t('reports.direct') }}
         </div><div text-sm op-fade>
-          传递
+          {{ $t('reports.transitive') }}
         </div><div text-sm op-fade>
-          来源
+          {{ $t('reports.source') }}
         </div>
         <template v-for="pkg of items" :key="pkg.packageId">
           <button font-mono text-left hover:bg-active px2 ml--2 rounded @click="selectedNode = pkg">
@@ -30,5 +30,5 @@ const packages = computed(() => payloads.filtered.packages
       </div>
     </template>
   </ReportExpendableContainer>
-  <UiEmptyState v-else title="没有传递依赖" message="当前筛选结果中没有含传递依赖的 crate" />
+  <UiEmptyState v-else :title="$t('reports.noTransitive')" :message="$t('reports.noTransitiveMessage')" />
 </template>

@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from '#app/composables/router'
 
 const location = window.location
+const { t } = useI18n()
 const params = useRoute().params as Record<string, string[] | string>
 const selected = computed(() => {
   const value = Array.isArray(params.report) ? params.report[0] : params.report
   return value || 'all'
 })
-const tabs = [
-  { path: 'dependencies', label: '依赖关系', icon: 'i-ph-link-simple-duotone' },
-  { path: 'source-size', label: '源码体积', icon: 'i-ph-hard-drives-duotone' },
-  { path: 'duplicates', label: '重复版本', icon: 'i-ph-copy-duotone' },
-  { path: 'licenses', label: '许可证', icon: 'i-ph-scales-duotone' },
+const tabs = computed(() => [
+  { path: 'dependencies', label: t('reports.relationships'), icon: 'i-ph-link-simple-duotone' },
+  { path: 'source-size', label: t('reports.sourceSize'), icon: 'i-ph-hard-drives-duotone' },
+  { path: 'duplicates', label: t('reports.duplicates'), icon: 'i-ph-copy-duotone' },
+  { path: 'licenses', label: t('reports.licenses'), icon: 'i-ph-scales-duotone' },
   { path: 'audit', label: 'RustSec', icon: 'i-ph-shield-warning-duotone' },
-  { path: 'outdated', label: '过期依赖', icon: 'i-ph-clock-counter-clockwise-duotone' },
-  { path: '', label: '全部', icon: 'i-ph-grid-four-duotone' },
-]
+  { path: 'outdated', label: t('reports.outdated'), icon: 'i-ph-clock-counter-clockwise-duotone' },
+  { path: '', label: t('reports.all'), icon: 'i-ph-grid-four-duotone' },
+])
 </script>
 
 <template>

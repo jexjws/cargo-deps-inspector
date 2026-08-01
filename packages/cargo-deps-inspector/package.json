@@ -67,6 +67,7 @@
     "modern-screenshot": "catalog:frontend",
     "nanovis": "catalog:frontend",
     "rollup": "catalog:bundling",
-    "theme-vitesse": "catalog:frontend"
+    "theme-vitesse": "catalog:frontend",
+    "vue-i18n": "catalog:frontend"
   }
 }

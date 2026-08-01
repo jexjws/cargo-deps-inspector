@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from '#app/composables/router'
 import { selectedNode } from '../../state/current'
 import { filters } from '../../state/filters'
@@ -7,34 +9,35 @@ import { isFiltersOpen, isSettingOpen, isSidepanelCollapsed } from '../../state/
 
 const route = useRoute()
 const location = window.location
+const { t } = useI18n()
 
-const tabsMeta = [
+const tabsMeta = computed(() => [
   {
-    name: 'Graph View',
+    name: t('nav.graph'),
     path: '/graph',
     icon: 'i-ph-tree-structure-duotone',
   },
   {
-    name: 'Grid View',
+    name: t('nav.grid'),
     path: '/grid/depth',
     icon: 'i-ph-grid-nine-duotone',
   },
   {
-    name: 'Report View',
+    name: t('nav.report'),
     path: '/report',
     icon: 'i-ph-projector-screen-chart-duotone',
   },
   {
-    name: 'Chart View',
+    name: t('nav.chart'),
     path: '/chart',
     icon: 'i-ph-chart-donut-duotone',
   },
   {
-    name: 'Compare',
+    name: t('nav.compare'),
     path: '/compare',
     icon: 'i-ph-flip-horizontal-duotone',
   },
-]
+])
 
 function resetPanelState() {
   isSettingOpen.value = false
@@ -108,7 +111,8 @@ function toggleFilters() {
         <button
           w-10 h-10 rounded-full hover:bg-active
           flex="~ items-center justify-center"
-          title="Filters"
+          :title="t('nav.filters')"
+          :aria-label="t('nav.filters')"
           :class="isFiltersOpen ? 'text-primary' : 'op-fade'"
           @click="toggleFilters()"
         >
@@ -121,7 +125,8 @@ function toggleFilters() {
       <button
         w-10 h-10 rounded-full hover:bg-active
         flex="~ items-center justify-center"
-        title="Settings"
+        :title="t('nav.settings')"
+        :aria-label="t('nav.settings')"
         :class="isSettingOpen ? 'text-primary' : 'op-fade'"
         @click="toggleSetting()"
       >

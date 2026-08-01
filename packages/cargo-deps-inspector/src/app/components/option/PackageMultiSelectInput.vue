@@ -33,7 +33,7 @@ function onCommitted(node: PackageNode) {
             <slot name="icon" />
             <input
               v-model="input"
-              placeholder="Select package"
+              :placeholder="$t('compare.selectPackage')"
               w-full bg-transparent outline-none
               class="placeholder:text-#8886"
               @keydown="onEnter"

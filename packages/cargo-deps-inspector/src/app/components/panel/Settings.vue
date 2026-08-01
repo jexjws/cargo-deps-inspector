@@ -9,29 +9,29 @@ const backend = getBackend()
 <template>
   <div>
     <div flex="~ col gap-2" p4>
-      <OptionItem title="显示源码体积" description="在 crate 卡片与图节点上显示源码目录大小">
+      <OptionItem :title="$t('settings.sourceSize')" :description="$t('settings.sourceSizeDescription')">
         <OptionCheckbox v-model="settings.showSourceSizeBadge" />
       </OptionItem>
-      <OptionItem title="按体积着色" description="根据源码体积调整徽章颜色">
+      <OptionItem :title="$t('settings.colorBySize')" :description="$t('settings.colorBySizeDescription')">
         <OptionCheckbox v-model="settings.colorizePackageSize" />
       </OptionItem>
-      <OptionItem title="依赖类型徽章" description="显示 normal、dev 与 build 来源">
-        <OptionSelectGroup v-model="settings.showDependencyKindBadge" :options="['none', 'normal', 'dev', 'build', 'all']" :titles="['隐藏', 'Normal', 'Dev', 'Build', '全部']" />
+      <OptionItem :title="$t('settings.dependencyBadges')" :description="$t('settings.dependencyBadgesDescription')">
+        <OptionSelectGroup v-model="settings.showDependencyKindBadge" :options="['none', 'normal', 'dev', 'build', 'all']" :titles="[$t('settings.hidden'), 'Normal', 'Dev', 'Build', $t('common.all')]" />
       </OptionItem>
-      <OptionItem title="依赖树分组" description="在详情面板中按来源或依赖类型分组">
-        <OptionSelectGroup v-model="settings.dependenciesGroupBy" :options="['none', 'source', 'kind']" :titles="['不分组', '来源', '类型']" />
+      <OptionItem :title="$t('settings.treeGrouping')" :description="$t('settings.treeGroupingDescription')">
+        <OptionSelectGroup v-model="settings.dependenciesGroupBy" :options="['none', 'source', 'kind']" :titles="[$t('settings.ungrouped'), $t('settings.source'), $t('settings.kind')]" />
       </OptionItem>
-      <OptionItem title="展开完整依赖树" description="显示传递依赖而不只显示直接依赖">
+      <OptionItem :title="$t('settings.fullTree')" :description="$t('settings.fullTreeDescription')">
         <OptionCheckbox v-model="settings.deepDependenciesTree" />
       </OptionItem>
-      <OptionItem title="图表动画" description="为树图、旭日图和火焰图启用过渡动画">
+      <OptionItem :title="$t('settings.chartAnimation')" :description="$t('settings.chartAnimationDescription')">
         <OptionCheckbox v-model="settings.chartAnimation" />
       </OptionItem>
     </div>
     <PanelFiltersOptionExcludes />
     <div v-if="backend.isDynamic" border="t base" p4>
       <button btn-action @click="fetchData(true)">
-        <div i-ph-arrows-clockwise-duotone />重新解析 Cargo 数据
+        <div i-ph-arrows-clockwise-duotone />{{ $t('settings.reparse') }}
       </button>
     </div>
   </div>

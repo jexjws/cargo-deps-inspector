@@ -6,6 +6,7 @@ import { partition } from '@antfu/utils'
 import { useMouse } from '@vueuse/core'
 import { createColorGetterSpectrum, Flamegraph, Sunburst, Treemap } from 'nanovis'
 import { computed, nextTick, onUnmounted, reactive, shallowRef, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from '#app/composables/router'
 import { isDark } from '../../composables/dark'
 import { selectedNode } from '../../state/current'
@@ -15,6 +16,7 @@ import { isSidepanelCollapsed } from '../../state/ui'
 import { bytesToHumanSize } from '../../utils/format'
 
 const mouse = reactive(useMouse())
+const { t } = useI18n()
 const params = useRoute().params as Record<string, string>
 const chart = computed<'flamegraph' | 'treemap' | 'sunburst'>(() => params.chart?.[0] as any || 'treemap')
 const nodeHover = shallowRef<ChartNode | undefined>(undefined)
@@ -30,7 +32,7 @@ const tree = computed(() => {
 
   const root: ChartNode = {
     id: '~root',
-    text: 'Project',
+    text: t('chart.project'),
     size: 0,
     sizeSelf: 0,
     children: [],
@@ -42,7 +44,7 @@ const tree = computed(() => {
 
   macrosTasks.unshift(() => {
     root.size += root.children.reduce((acc, i) => acc + i.size, 0)
-    root.subtext = settings.value.chartMetric === 'packages' ? `${root.size} crates` : bytesToHumanSize(root.size).join(' ')
+    root.subtext = settings.value.chartMetric === 'packages' ? t('common.crates', { count: root.size }) : bytesToHumanSize(root.size).join(' ')
     root.children.sort((a, b) => b.size - a.size || a.id.localeCompare(b.id))
   })
 
@@ -92,7 +94,7 @@ const tree = computed(() => {
     macrosTasks.unshift(() => {
       const selfSize = node.size
       node.size += node.children.reduce((acc, i) => acc + i.size, 0)
-      node.subtext = settings.value.chartMetric === 'packages' ? `${node.size} crates` : bytesToHumanSize(node.size).join(' ')
+      node.subtext = settings.value.chartMetric === 'packages' ? t('common.crates', { count: node.size }) : bytesToHumanSize(node.size).join(' ')
 
       // If the node itself is more than 10% of the total size, we add a self node to make it more visible
       if (node.children.length && selfSize / node.size > 0.1) {
@@ -101,7 +103,7 @@ const tree = computed(() => {
           text: '',
           size: selfSize,
           sizeSelf: selfSize,
-          subtext: settings.value.chartMetric === 'packages' ? `${selfSize} crate` : bytesToHumanSize(selfSize).join(' '),
+          subtext: settings.value.chartMetric === 'packages' ? t('common.crate', { count: selfSize }) : bytesToHumanSize(selfSize).join(' '),
           children: [],
           meta: node.meta,
           parent: node,
@@ -273,7 +275,7 @@ onUnmounted(() => {
       active-class="text-primary bg-primary:5"
     >
       <div i-ph-checkerboard-duotone />
-      Treemap
+      {{ $t('chart.treemap') }}
     </NuxtLink>
     <NuxtLink
       btn-action as="button"
@@ -281,7 +283,7 @@ onUnmounted(() => {
       active-class="text-primary bg-primary:5"
     >
       <div i-ph-chart-donut-duotone />
-      Sunburst
+      {{ $t('chart.sunburst') }}
     </NuxtLink>
     <NuxtLink
       btn-action as="button"
@@ -289,21 +291,21 @@ onUnmounted(() => {
       active-class="text-primary bg-primary:5"
     >
       <div i-ph-chart-bar-horizontal-duotone />
-      Flamegraph
+      {{ $t('chart.flamegraph') }}
     </NuxtLink>
 
     <div flex-auto />
     <OptionSelectGroup
       v-model="settings.chartColoringMode"
-      v-tooltip="`配色模式`"
+      v-tooltip="$t('chart.coloringMode')"
       :options="['spectrum', 'source']"
-      :titles="['光谱', '来源']"
+      :titles="[$t('chart.spectrum'), $t('chart.source')]"
     />
     <OptionSelectGroup
       v-model="settings.chartMetric"
-      v-tooltip="`面积指标`"
+      v-tooltip="$t('chart.areaMetric')"
       :options="['source-size', 'packages']"
-      :titles="['源码体积', 'Crate 数量']"
+      :titles="[$t('chart.sourceSize'), $t('chart.crateCount')]"
     />
   </div>
   <div mt5>

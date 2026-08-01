@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Backend } from '../types/backend'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { backend } from '../backends'
 import { rawPayload } from '../state/data'
 
@@ -8,6 +9,7 @@ const props = defineProps<{
   backend?: Backend | undefined
   error?: unknown
 }>()
+const { t } = useI18n()
 
 const error = computed(() => {
   if (props.error)
@@ -15,7 +17,7 @@ const error = computed(() => {
   if (backend.value?.connectionError.value)
     return backend.value.connectionError.value
   if (backend.value?.status.value === 'error')
-    return 'Connection failed'
+    return t('loading.connectionFailed')
   return null
 })
 
@@ -32,7 +34,7 @@ const isLoading = computed(() => Boolean(!backend.value || backend.value?.status
       <div h-20>
         <div v-if="error" text-red rounded p2 flex="~ col items-center">
           <div font-bold>
-            无法连接 Cargo 分析后端
+            {{ $t('loading.backendFailed') }}
           </div>
           <div text-red5 dark:text-red3>
             {{ error }}
@@ -42,10 +44,10 @@ const isLoading = computed(() => Boolean(!backend.value || backend.value?.status
           v-else-if="backend?.status.value === 'connected'"
           flex="~ gap-2 items-center" text-lg op-fade
         >
-          正在解析 Cargo 依赖数据…
+          {{ $t('loading.parsing') }}
         </div>
         <div v-else flex="~ gap-2 items-center" text-lg op-fade>
-          正在连接…
+          {{ $t('loading.connecting') }}
         </div>
       </div>
     </div>

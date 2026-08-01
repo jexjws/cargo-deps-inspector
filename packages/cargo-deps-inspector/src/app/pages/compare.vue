@@ -55,16 +55,16 @@ function reset() {
   >
     <div text-center>
       <h1 text-2xl font-bold>
-        Select packages to compare
+        {{ $t('compare.title') }}
       </h1>
       <p op-fade>
-        Use the filters to select packages to compare
+        {{ $t('compare.description') }}
       </p>
     </div>
     <div grid="~ cols-[1fr_max-content_1fr] gap-2">
       <div>
         <div text-yellow p2 text-center op75>
-          Compare Group A
+          {{ $t('compare.groupA') }}
         </div>
         <OptionPackageMultiSelectInput v-model:selected="selectedA" :excludes="selectedAll">
           <template #icon>
@@ -73,11 +73,11 @@ function reset() {
         </OptionPackageMultiSelectInput>
       </div>
       <div p2 rounded op-fade py13>
-        vs
+        {{ $t('compare.versus') }}
       </div>
       <div>
         <div text-purple p2 text-center op75>
-          Compare Group B
+          {{ $t('compare.groupB') }}
         </div>
         <OptionPackageMultiSelectInput v-model:selected="selectedB" :excludes="selectedAll">
           <template #icon>
@@ -93,7 +93,7 @@ function reset() {
       px5 py1 text-lg border="~ base rounded-full" hover="bg-active op100"
       @click="compare"
     >
-      Start Compare
+      {{ $t('compare.start') }}
     </button>
   </div>
   <template v-else>
@@ -110,7 +110,7 @@ function reset() {
         px5 py1 text-lg hover="bg-active op100" op-fade
         @click="reset"
       >
-        Start a new compare
+        {{ $t('compare.restart') }}
       </button>
     </div>
   </template>

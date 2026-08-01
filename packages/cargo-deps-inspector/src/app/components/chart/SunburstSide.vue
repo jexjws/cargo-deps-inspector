@@ -29,7 +29,7 @@ const emit = defineEmits<{
           hover="bg-active" rounded px2
           @click="emit('select', child)"
         >
-          <span v-if="child.meta && child.meta === selected?.meta" text-primary>(self)</span>
+          <span v-if="child.meta && child.meta === selected?.meta" text-primary>{{ $t('chart.self') }}</span>
           <DisplayPackageSpec v-else-if="child.meta" :pkg="child.meta" />
           <span v-else>{{ child.id }}</span>
         </button>
@@ -49,8 +49,8 @@ const emit = defineEmits<{
           <DisplayFileSizeBadge text-xs :bytes="child.size" :total="selected.size" :percent-ratio="3" />
           <div
             v-if="child.children.length > 0"
-            v-tooltip="`${child.children.length} dependencies`"
-            :title="`${child.children.length} dependencies`"
+            v-tooltip="$t('common.dependencies', { count: child.children.length })"
+            :title="$t('common.dependencies', { count: child.children.length })"
             text-xs op-fade
           >
             ({{ child.children.length }})

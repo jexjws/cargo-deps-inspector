@@ -58,13 +58,17 @@ function onDrop(event: DragEvent): void {
       <div p8 flex="~ col items-center text-center gap-3">
         <UiLogo w-20 h-20 class="hover:animate-spin-reverse" />
         <p badge-color-lime rounded-full px3 py1 text-sm>
-          纯浏览器查看器
+          {{ $t('import.browserViewer') }}
         </p>
         <h1 text-3xl font-700>
-          导入 Cargo 依赖数据
+          {{ $t('import.title') }}
         </h1>
         <p op-fade max-w-xl>
-          可打开 <code badge-color-gray rounded px1>cargo metadata --format-version=1</code> 原始 JSON，或 Cargo Deps Inspector 增强快照。
+          <i18n-t keypath="import.description">
+            <template #command>
+              <code badge-color-gray rounded px1>cargo metadata --format-version=1</code>
+            </template>
+          </i18n-t>
         </p>
 
         <label
@@ -75,13 +79,13 @@ function onDrop(event: DragEvent): void {
         >
           <input sr-only type="file" accept="application/json,.json" @change="onInput">
           <div :class="loading ? 'i-ph-spinner-gap animate-spin' : 'i-ph-upload-simple-duotone'" text-3xl text-primary />
-          <strong text-lg>{{ loading ? '正在解析…' : '选择或拖放 JSON 文件' }}</strong>
-          <span op-fade>文件仅在当前浏览器标签页内处理，不会上传。</span>
+          <strong text-lg>{{ loading ? $t('import.parsing') : $t('import.selectFile') }}</strong>
+          <span op-fade>{{ $t('import.localOnly') }}</span>
         </label>
       </div>
       <div border="t base" p4 px6 flex="~ gap-2 items-start" text-sm badge-color-amber>
         <div i-ph-warning-duotone flex-none mt0.5 />
-        <p>增强快照会保留绝对本地路径。分享前请检查其中可能包含的隐私信息。</p>
+        <p>{{ $t('import.privacy') }}</p>
       </div>
       <div v-if="error" border="t base" p4 px6 text-red flex="~ gap-2 items-start">
         <div i-ph-x-circle-duotone flex-none mt0.5 />

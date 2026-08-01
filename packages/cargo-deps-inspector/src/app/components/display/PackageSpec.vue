@@ -13,7 +13,7 @@ defineProps<{
       h-1em w-1.5em relative of-visible inline-block
     >
       <div
-        title="Workspace Package"
+        :title="$t('details.workspacePackage')"
         i-catppuccin-folder-packages-open icon-catppuccin mr2 absolute left-0 top-0
       />
     </span>

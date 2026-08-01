@@ -26,7 +26,7 @@ defineProps<{
       </span>
     </div>
     <div op-fade text-center>
-      可视化 Cargo 依赖图、源码占用与依赖健康状态。
+      {{ $t('landing.tagline') }}
     </div>
   </h1>
 </template>

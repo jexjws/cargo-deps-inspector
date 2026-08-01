@@ -7,9 +7,9 @@ import { filters } from '../../state/filters'
     <div flex="~ gap-2 items-center">
       <div i-ph-arrows-in-cardinal-duotone flex-none />
       <div>
-        <div>Focus On</div>
+        <div>{{ $t('filters.focusTitle') }}</div>
         <div op-fade text-sm mt--0.5>
-          Filter specific packages and their dependencies
+          {{ $t('filters.focusDescription') }}
         </div>
       </div>
     </div>

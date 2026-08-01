@@ -8,6 +8,6 @@ router.replace({ path: '/grid/depth', hash: location.hash, query: route.query })
 
 <template>
   <div>
-    Redirecting...
+    {{ $t('loading.redirecting') }}
   </div>
 </template>

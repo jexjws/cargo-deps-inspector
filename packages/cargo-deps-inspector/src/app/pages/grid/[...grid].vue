@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CargoDependencyKind, CargoPackageSourceKind, PackageNode } from 'cargo-deps-tools'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRoute } from '#app/composables/router'
 import { payloads } from '../../state/payload'
 
@@ -14,6 +15,7 @@ interface Group {
 }
 
 const params = useRoute().params as Record<string, string[] | string>
+const { t } = useI18n()
 const tab = computed<GridTab>(() => {
   const value = Array.isArray(params.grid) ? params.grid[0] : params.grid
   return (value as GridTab) || 'depth'
@@ -25,7 +27,7 @@ function groupBy(getKeys: (pkg: PackageNode) => string[], expanded = false): Gro
   const map = new Map<string, PackageNode[]>()
   for (const pkg of payloads.filtered.packages) {
     const keys = getKeys(pkg)
-    for (const key of keys.length ? keys : ['<未声明>'])
+    for (const key of keys.length ? keys : [t('common.undeclared')])
       map.set(key, [...(map.get(key) ?? []), pkg])
   }
   return [...map.entries()]
@@ -41,7 +43,7 @@ const groups = computed<Group[]>(() => {
       .map(group => ({ ...group, kind: group.name as CargoDependencyKind }))
   }
   if (tab.value === 'licenses')
-    return groupBy(pkg => [pkg.metadata.license || '<未声明>'])
+    return groupBy(pkg => [pkg.metadata.license || t('common.undeclared')])
   if (tab.value === 'editions')
     return groupBy(pkg => [pkg.metadata.edition], true)
   if (tab.value === 'targets')
@@ -55,27 +57,27 @@ const groups = computed<Group[]>(() => {
   return [...map.entries()]
     .sort(([a], [b]) => a - b)
     .map(([depth, packages]) => ({
-      name: depth === 0 ? 'Workspace crates' : depth === MAX_DEPTH ? `深度 ${depth}+` : `深度 ${depth}`,
+      name: depth === 0 ? t('grid.workspaceCrates') : depth === MAX_DEPTH ? t('grid.depthGroupMore', { depth }) : t('grid.depthGroup', { depth }),
       packages,
       expanded: depth < 3,
     }))
 })
 
-const tabs = [
-  { path: 'depth', label: '深度', icon: 'i-ph-stack-simple-duotone' },
-  { path: 'source', label: '来源', icon: 'i-ph-database-duotone' },
-  { path: 'kind', label: '依赖类型', icon: 'i-ph-git-branch-duotone' },
-  { path: 'licenses', label: '许可证', icon: 'i-ph-scales-duotone' },
-  { path: 'editions', label: 'Edition', icon: 'i-ph-calendar-dots-duotone' },
-  { path: 'targets', label: 'Targets', icon: 'i-ph-crosshair-duotone' },
-]
+const tabs = computed(() => [
+  { path: 'depth', label: t('grid.depth'), icon: 'i-ph-stack-simple-duotone' },
+  { path: 'source', label: t('grid.source'), icon: 'i-ph-database-duotone' },
+  { path: 'kind', label: t('grid.dependencyKind'), icon: 'i-ph-git-branch-duotone' },
+  { path: 'licenses', label: t('grid.licenses'), icon: 'i-ph-scales-duotone' },
+  { path: 'editions', label: t('grid.editions'), icon: 'i-ph-calendar-dots-duotone' },
+  { path: 'targets', label: t('grid.targets'), icon: 'i-ph-crosshair-duotone' },
+])
 </script>
 
 <template>
   <div flex="~ col gap-2">
     <div flex="~ gap-2 items-center wrap" mb4>
       <div op-fade>
-        分组方式
+        {{ $t('grid.groupBy') }}
       </div>
       <NuxtLink
         v-for="item of tabs"

@@ -9,13 +9,13 @@ const packages = computed(() => payloads.filtered.packages
 </script>
 
 <template>
-  <ReportExpendableContainer v-if="packages.length" :list="packages" title="源码占用最大的 crate">
+  <ReportExpendableContainer v-if="packages.length" :list="packages" :title="$t('reports.largestSource')">
     <template #default="{ items }">
       <div grid="~ cols-[1fr_max-content_1fr] gap-x-4 gap-y-1 items-center">
         <div /><div text-sm op-fade>
-          源码体积
+          {{ $t('reports.sourceSize') }}
         </div><div text-sm op-fade>
-          文件组成
+          {{ $t('reports.fileComposition') }}
         </div>
         <template v-for="pkg of items" :key="pkg.packageId">
           <button font-mono text-left hover:bg-active px2 ml--2 rounded @click="selectedNode = pkg">
@@ -27,5 +27,5 @@ const packages = computed(() => payloads.filtered.packages
       </div>
     </template>
   </ReportExpendableContainer>
-  <UiEmptyState v-else title="没有源码体积信息" message="当前数据未包含依赖源码目录统计" />
+  <UiEmptyState v-else :title="$t('reports.noSourceSize')" :message="$t('reports.noSourceSizeMessage')" />
 </template>

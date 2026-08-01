@@ -53,7 +53,8 @@ onKeyStroke('Escape', () => {
         w-10 h-10 rounded-full op30
         hover="op100 bg-active"
         flex="~ items-center justify-center"
-        title="Close"
+        :title="$t('common.close')"
+        :aria-label="$t('common.close')"
         @click="close"
       >
         <div i-ph-x />

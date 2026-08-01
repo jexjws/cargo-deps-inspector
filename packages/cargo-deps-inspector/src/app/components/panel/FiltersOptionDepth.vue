@@ -55,12 +55,12 @@ const depthGridRows = computed(() => Math.ceil(availableDepths.value.length / 3)
   <div flex="~ col gap-2" p4 border="t base">
     <div flex="~ gap-2 items-center">
       <div
-        v-tooltip="'Dependency depth is the number of dependencies between the root package and the target package'"
+        v-tooltip="$t('filters.depthDescription')"
         flex="~ gap-2 items-center"
       >
         <div i-ph-stack-duotone flex-none />
         <div>
-          Dependency Depth
+          {{ $t('filters.depthTitle') }}
         </div>
       </div>
       <div flex-auto />
@@ -71,7 +71,7 @@ const depthGridRows = computed(() => Math.ceil(availableDepths.value.length / 3)
           v-model="depthsRefsAll"
         />
         <div>
-          All
+          {{ $t('common.all') }}
         </div>
         <DisplayNumberBadge
           :number="payloads.available.packages.length"

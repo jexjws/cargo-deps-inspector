@@ -44,7 +44,7 @@ const sourceBreakdown = computed(() => {
         </div>
       </div>
       <div flex-auto />
-      <button v-tooltip="'收起侧栏'" w-10 h-10 mr--2 rounded-full op30 hover="op100 bg-active" flex="~ items-center justify-center" @click="settings.collapseSidepanel = true">
+      <button v-tooltip="$t('nav.collapseSidebar')" :aria-label="$t('nav.collapseSidebar')" w-10 h-10 mr--2 rounded-full op30 hover="op100 bg-active" flex="~ items-center justify-center" @click="settings.collapseSidepanel = true">
         <div i-ph-caret-double-left />
       </button>
     </h1>
@@ -61,37 +61,37 @@ const sourceBreakdown = computed(() => {
       <div flex="~ gap-2 items-center">
         <div i-ph-cube-duotone flex-none text-lime />
         <DisplayNumberBadge :number="payloads.workspace.packages.length" rounded-full text-sm color="badge-color-lime" />
-        <span>个 workspace crate</span>
+        <span>{{ $t('overview.workspaceCrates') }}</span>
       </div>
       <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/grid/depth', hash: location.hash }">
         <div i-ph-package-duotone flex-none text-primary />
         <DisplayNumberBadge :number="payloads.available.packages.length" rounded-full text-sm color="badge-color-primary" />
-        <span>个已解析 crate</span>
+        <span>{{ $t('overview.resolvedCrates') }}</span>
       </NuxtLink>
       <NuxtLink v-if="multipleVersionsCount" flex="~ gap-2 items-center" :to="{ path: '/report/duplicates', hash: location.hash }">
         <div i-ph-copy-duotone flex-none text-orange />
         <DisplayNumberBadge :number="multipleVersionsCount" rounded-full text-sm color="badge-color-orange" />
-        <span>个重复版本 crate</span>
+        <span>{{ $t('overview.duplicateCrates') }}</span>
       </NuxtLink>
       <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/report/licenses', hash: location.hash }">
         <div i-ph-scales-duotone flex-none text-amber />
         <DisplayNumberBadge :number="licensesCount" rounded-full text-sm color="badge-color-amber" />
-        <span>种许可证声明</span>
+        <span>{{ $t('overview.licenses') }}</span>
       </NuxtLink>
       <div v-if="gitCount" flex="~ gap-2 items-center">
         <div i-ph-git-branch-duotone flex-none text-purple />
         <DisplayNumberBadge :number="gitCount" rounded-full text-sm color="badge-color-purple" />
-        <span>个 Git 依赖</span>
+        <span>{{ $t('overview.gitDependencies') }}</span>
       </div>
       <div flex="~ gap-2 items-center">
         <div i-ph-crosshair-duotone flex-none />
         <DisplayNumberBadge :number="targetCount" rounded-full text-sm />
-        <span>种 Cargo target 类型</span>
+        <span>{{ $t('overview.targetKinds') }}</span>
       </div>
       <NuxtLink flex="~ gap-2 items-center" :to="{ path: '/report/source-size', hash: location.hash }">
         <div i-ph-hard-drives-duotone flex-none text-primary />
         <DisplayFileSizeBadge :bytes="totalSourceSize" :percent="false" rounded-full text-sm />
-        <span>依赖源码总占用</span>
+        <span>{{ $t('overview.totalSourceSize') }}</span>
       </NuxtLink>
     </div>
 
