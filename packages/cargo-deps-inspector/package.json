@@ -1,0 +1,72 @@
+{
+  "name": "cargo-deps-inspector",
+  "type": "module",
+  "version": "2.3.2",
+  "description": "Visualize and report resolved Cargo dependency graphs",
+  "author": "jexjws",
+  "license": "MIT",
+  "homepage": "https://github.com/jexjws/cargo-deps-inspector#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jexjws/cargo-deps-inspector.git"
+  },
+  "bugs": "https://github.com/jexjws/cargo-deps-inspector/issues",
+  "keywords": [
+    "cargo",
+    "rust",
+    "dependencies",
+    "visualization"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.mjs"
+  },
+  "main": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "bin": "bin.mjs",
+  "files": [
+    "bin.mjs",
+    "dist",
+    "skills"
+  ],
+  "scripts": {
+    "dev": "pnpm run -r stub && (cd src && CDI_BACKEND=dev ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev)",
+    "stub": "unbuild --stub",
+    "build": "(cd src && CDI_BACKEND=dev ROLLDOWN_OPTIONS_VALIDATION=loose nuxi build) && unbuild",
+    "build:debug": "ROLLDOWN_OPTIONS_VALIDATION=loose NUXT_DEBUG_BUILD=true pnpm run build",
+    "start": "node ./bin.mjs",
+    "prepack": "pnpm build && node scripts/copy-skills.mjs",
+    "dev:prepare": "(cd src && nuxi prepare) && node scripts/copy-skills.mjs",
+    "online:build": "(cd src && CDI_BACKEND=import ROLLDOWN_OPTIONS_VALIDATION=loose nuxi build) && unbuild",
+    "online:dev": "pnpm run -r stub && (cd src && CDI_BACKEND=import ROLLDOWN_OPTIONS_VALIDATION=loose nuxi dev)"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "catalog:deps",
+    "ansis": "catalog:deps",
+    "cac": "catalog:deps",
+    "cargo-deps-tools": "workspace:*",
+    "devframe": "catalog:deps",
+    "get-port-please": "catalog:deps",
+    "h3": "catalog:deps",
+    "ohash": "catalog:deps",
+    "pathe": "catalog:deps",
+    "tinyexec": "catalog:deps",
+    "tinyglobby": "catalog:deps",
+    "unconfig": "catalog:deps",
+    "valibot": "catalog:deps",
+    "verkit": "catalog:deps"
+  },
+  "devDependencies": {
+    "@unocss/nuxt": "catalog:bundling",
+    "@vueuse/nuxt": "catalog:bundling",
+    "d3": "catalog:frontend",
+    "d3-hierarchy": "catalog:frontend",
+    "d3-shape": "catalog:frontend",
+    "floating-vue": "catalog:frontend",
+    "fuse.js": "catalog:frontend",
+    "modern-screenshot": "catalog:frontend",
+    "nanovis": "catalog:frontend",
+    "rollup": "catalog:bundling",
+    "theme-vitesse": "catalog:frontend"
+  }
+}

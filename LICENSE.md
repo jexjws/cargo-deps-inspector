@@ -1,6 +1,7 @@
 MIT License
 
 Copyright (c) 2025 Anthony Fu <https://github.com/antfu>
+Copyright (c) 2026 voyage200 <https://github.com/jexjws>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

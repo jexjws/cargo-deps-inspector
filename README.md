@@ -1,149 +1,144 @@
-![Logo](./packages/node-modules-inspector/src/public/favicon.svg)
+![Cargo Deps Inspector](./packages/cargo-deps-inspector/src/public/favicon.svg)
 
-# Node Modules Inspector
+# Cargo Deps Inspector
 
-[![npm version][npm-version-src]][npm-version-href]
-[![npm downloads][npm-downloads-src]][npm-downloads-href]
-[![bundle][bundle-src]][bundle-href]
-[![JSDocs][jsdocs-src]][jsdocs-href]
-[![License][license-src]][license-href]
+Cargo 依赖图可视化与诊断工具。它以 `cargo metadata --format-version=1` 为唯一解析来源，支持工作区、feature、target、依赖种类、源码来源和本地源码体积分析。
 
-Visualize your node_modules, inspect dependencies, and more.
+## 快速开始
 
-## Quick Start
-
-Try it by running following command under your `pnpm`/`npm`/`bun` project.
+本项目仍以 npm 包分发，但分析对象只限 Cargo/Rust 项目：
 
 ```bash
-pnpx node-modules-inspector
+pnpm dlx cargo-deps-inspector
+# 或
+npx cargo-deps-inspector
 ```
+
+如果可执行文件 `cargo-deps-inspector` 已在 `PATH` 中，也可以使用 Cargo 外部子命令形式：
+
 ```bash
-npx node-modules-inspector
+cargo deps-inspector
 ```
+
+默认会执行带 `--locked` 的 `cargo metadata`，因此不会创建或修改 `Cargo.lock`。确实需要 Cargo 更新锁文件时，必须显式传入 `--no-locked`。
+
+常用解析参数：
+
 ```bash
-bunx node-modules-inspector
+cargo deps-inspector --features serde,cli
+cargo deps-inspector --all-features
+cargo deps-inspector --no-default-features
+cargo deps-inspector --filter-platform x86_64-unknown-linux-gnu
+cargo deps-inspector --offline
+cargo deps-inspector --manifest-path crates/app/Cargo.toml
 ```
 
-> Currently supports `pnpm`, `npm`, and `bun` projects. We are counting on the community to bring support for other package managers.
+Web UI 提供 grid、graph、chart、compare 和 reports 五类视图。基础分析只读取 Cargo 元数据与本机 crate 源码，不依赖 `cargo-audit` 或 `cargo-outdated`。
 
-### Online Version
+## 配置
 
-You can also try an online version at [**node-modules.dev**](https://node-modules.dev/), powered by [WebContainer](https://webcontainers.io/).
+在项目根目录创建 `cargo-deps-inspector.config.ts`：
 
-## Configuration
-
-You can create a `node-modules-inspector.config.ts` file in your project root to configure the inspector's default behaviour.
-
-```js
-import { defineConfig } from 'node-modules-inspector'
+```ts
+import { defineConfig } from 'cargo-deps-inspector'
 
 export default defineConfig({
-  defaultFilters: {
-    excludes: [
-      'eslint',
-    ],
+  name: 'my-rust-workspace',
+  cargo: {
+    locked: true,
+    features: ['cli'],
+    filterPlatform: 'x86_64-unknown-linux-gnu',
   },
-  defaultSettings: {
-    moduleTypeSimple: true,
+  excludePackages: ['windows-*'],
+  externalTools: {
+    audit: { noFetch: true },
+    outdated: { offline: true },
   },
-
-  // Experimental publint.dev integration, default is false
-  publint: true
-
-  // ...see jsdoc for more options and details
 })
 ```
 
-## Static Build
+命令行显式参数优先于配置文件。`excludePackages` 与 `excludeDependenciesOf` 支持 crate 名称、`name@semver`、通配符和谓词函数。
 
-You can also build a static SPA of your current node_modules status:
-
-```bash
-pnpx node-modules-inspector build
-```
-```bash
-npx node-modules-inspector build
-```
-```bash
-bunx node-modules-inspector build
-```
-
-Then you can host the `.node-modules-inspector` folder with any static file server.
-
-You can see a build for all Anthony Fu's packages at [everything.antfu.dev](https://everything.antfu.dev).
-
-## CLI Reports
-
-In addition to the web UI, the inspector exposes three machine-readable reports designed for shell pipelines and AI coding agents:
+## CLI 报告
 
 ```bash
-npx node-modules-inspector report duplicates   # packages installed in multiple versions
-npx node-modules-inspector report sizes        # packages sorted by install size
-npx node-modules-inspector report maintainers  # dep-upgrade opportunities + publint, grouped by consumer/author
+cargo deps-inspector report duplicates
+cargo deps-inspector report source-sizes --limit 20
+cargo deps-inspector report audit
+cargo deps-inspector report outdated
 ```
 
-Each command renders a pretty ANSI table by default. Add `--json` to emit JSON to stdout — progress logs go to stderr, so output is pipe-safe:
+所有报告均支持 `--json`。JSON 模式下结果写到 stdout，进度写到 stderr，可安全接入 `jq` 或 CI 管道。
+
+- `duplicates`：同名 crate 被解析为多个版本。
+- `source-sizes`：本地 crate 源码目录体积与 Rust/测试/文档等分类。
+- `audit`：按需调用 `cargo audit --json` 并展示 RustSec 结果。
+- `outdated`：按需调用 `cargo outdated --workspace --format json`。
+
+后两项是可选集成。工具未安装时会返回安装指引，基础图谱仍可正常工作：
 
 ```bash
-npx node-modules-inspector report duplicates --json | jq '.[].name'
-npx node-modules-inspector report sizes --json --limit 10
-npx node-modules-inspector report maintainers --json --sort migration --no-latest-only
+cargo install cargo-audit --locked
+cargo install cargo-outdated --locked
 ```
 
-Common options across all reports: `--root <dir>`, `--config <file>`, `--depth <n>`, `--limit <n>`. Run `node-modules-inspector report --help` for the full per-report flag set.
+## 快照与浏览器导入
 
-## MCP Server
-
-The same three reports are exposed as MCP tools for AI coding agents. Start the server over stdio:
+在线构建不在浏览器内执行 Cargo，而是导入以下任一文件：
 
 ```bash
-npx node-modules-inspector mcp
+cargo metadata --format-version=1 > metadata.json
+cargo deps-inspector snapshot snapshot.json --yes
+cargo deps-inspector snapshot snapshot.json --audit --outdated --yes
 ```
 
-Tools exposed:
-- `nmi:report-duplicates`
-- `nmi:report-sizes`
-- `nmi:report-maintainers`
+增强快照保留源码体积和可选报告，也会保留 Cargo 返回的绝对路径。交互式导出前会显示隐私确认；非 TTY 环境必须显式传入 `--yes`。分享前请检查文件内容。
 
-Input/output JSON Schemas are auto-derived from the underlying valibot definitions and surfaced via `tools/list`. Wire it into Claude Code (or any MCP-compatible client) by adding `node-modules-inspector mcp` as a stdio server in your MCP config.
+运行浏览器导入版：
 
-> [!NOTE]
-> An [agent skill](./skills/node-modules-inspector/SKILL.md) lives at `skills/node-modules-inspector/SKILL.md` (repo root) and is copied into the published tarball at `<pkg>/skills/` during `prepack`. If your project uses [`skills-npm`](https://github.com/antfu/skills-npm), the skill is automatically symlinked into your agent's skill directory after `pnpm install`.
+```bash
+pnpm online:dev
+pnpm online:build
+```
 
-## Screenshots
+## 静态构建
 
-![Image](https://github.com/user-attachments/assets/80ce6f9d-26fb-4fcf-8c51-e3d2b6f9f24c)
-![Image](https://github.com/user-attachments/assets/6de8614c-2663-4c69-bd1e-96e8e66673a7)
-![Image](https://github.com/user-attachments/assets/b3efa459-6a6a-41c4-a9cd-5afac9268bf8)
+```bash
+cargo deps-inspector build --out-dir dist/cargo-deps
+```
 
-## Credits
+该命令生成可由任意静态服务器托管的 SPA，并内嵌本次 Cargo 图谱。`cargo-audit` 与 `cargo-outdated` 仍保持按需执行；纯静态页面不会尝试运行本机命令。
 
-- This project is heavily inspired by [npmgraph](https://npmgraph.js.org/)
-- Thanks to [@wooorm](https://github.com/wooorm) for the module type detection algorithm in [wooorm/npm-esm-vs-cjs](https://github.com/wooorm/npm-esm-vs-cjs)
-- The logo is derivated from the `black-hole-line-duotone` icon (yeah it's a black hole!) from the [Solar Icon Sets](https://www.figma.com/community/file/1166831539721848736/solar-icons-set) by [480 Design](https://www.figma.com/@480design) and [R4IN80W](https://www.figma.com/@voidrainbow) under the [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/) license.
-- Thanks to [@privatenumber](https://github.com/privatenumber) for [pkg-size.dev](https://pkg-size.dev/) for running analysis with installations in WebContainer.
+## MCP
 
-## Sponsors
+```bash
+cargo deps-inspector mcp
+```
 
-<p align="center">
-  <a href="https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg">
-    <img src='https://cdn.jsdelivr.net/gh/antfu/static/sponsors.svg' alt='Sponsors' />
-  </a>
-</p>
+通过 devframe 的 stdio MCP 适配器公开以下只读工具：
 
-## License
+- `cargo-deps-inspector:report-duplicates`
+- `cargo-deps-inspector:report-source-sizes`
+- `cargo-deps-inspector:report-audit`
+- `cargo-deps-inspector:report-outdated`
 
-[MIT](./LICENSE) License © [Anthony Fu](https://github.com/antfu)
+同一进程内会缓存 Cargo 图谱与外部报告；传入 `force` 可刷新按需报告。
 
-<!-- Badges -->
+## 开发
 
-[npm-version-src]: https://img.shields.io/npm/v/node-modules-inspector?style=flat&colorA=080f12&colorB=1fa669
-[npm-version-href]: https://npmjs.com/package/node-modules-inspector
-[npm-downloads-src]: https://img.shields.io/npm/dm/node-modules-inspector?style=flat&colorA=080f12&colorB=1fa669
-[npm-downloads-href]: https://npmjs.com/package/node-modules-inspector
-[bundle-src]: https://img.shields.io/bundlephobia/minzip/node-modules-inspector?style=flat&colorA=080f12&colorB=1fa669&label=minzip
-[bundle-href]: https://bundlephobia.com/result?p=node-modules-inspector
-[license-src]: https://img.shields.io/github/license/antfu/node-modules-inspector.svg?style=flat&colorA=080f12&colorB=1fa669
-[license-href]: https://github.com/antfu/node-modules-inspector/blob/main/LICENSE
-[jsdocs-src]: https://img.shields.io/badge/jsdocs-reference-080f12?style=flat&colorA=080f12&colorB=1fa669
-[jsdocs-href]: https://www.jsdocs.io/package/node-modules-inspector
+```bash
+pnpm install
+pnpm dev
+pnpm test
+pnpm typecheck
+pnpm lint
+pnpm build
+```
+
+仓库自带 `test/fixtures/cargo-workspace`，开发配置默认检查该 fixture。
+
+## 致谢与许可证
+
+本项目使用 `gpt-5.6-sol xhigh` 基于 Node Modules Inspector Vide 而来，界面与架构保留了原项目及 devframe 的重要设计经验。
+
+[MIT](./LICENSE)

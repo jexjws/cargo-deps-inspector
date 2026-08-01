@@ -1,0 +1,50 @@
+{
+  "name": "cargo-deps-tools",
+  "type": "module",
+  "version": "2.3.2",
+  "description": "Tools for inspecting resolved Cargo dependency graphs",
+  "author": "jexjws",
+  "license": "MIT",
+  "homepage": "https://github.com/jexjws/cargo-deps-inspector#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jexjws/cargo-deps-inspector.git",
+    "directory": "packages/cargo-deps-tools"
+  },
+  "bugs": "https://github.com/jexjws/cargo-deps-inspector/issues",
+  "keywords": [
+    "cargo",
+    "rust",
+    "dependencies",
+    "metadata"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.mjs",
+    "./browser": "./dist/browser.mjs",
+    "./utils": "./dist/utils.mjs",
+    "./constants": "./dist/constants.mjs"
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "stub": "unbuild --stub",
+    "prepublishOnly": "nr build",
+    "start": "tsx src/index.ts",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "p-limit": "catalog:deps",
+    "pathe": "catalog:deps",
+    "tinyexec": "catalog:deps",
+    "verkit": "catalog:deps"
+  },
+  "devDependencies": {
+    "unbuild": "catalog:bundling"
+  }
+}

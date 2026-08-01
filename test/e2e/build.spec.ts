@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-// "Build mode" = the static export produced by `node-modules-inspector build`.
+// "Build mode" = the static export produced by `cargo-deps-inspector build`.
 // No backend; data is baked into api/rpc-dump.json and api/metadata.json
 // reports `backend: 'static'`. Served from a plain static file server.
 
@@ -15,10 +15,10 @@ test.describe('build mode (static export)', () => {
     const manifest = await request.get('/__rpc-dump/index.json')
     expect(manifest.ok()).toBe(true)
     const manifestBody = await manifest.json()
-    expect(manifestBody).toHaveProperty('nmi:get-payload')
+    expect(manifestBody).toHaveProperty('cargo-deps-inspector:get-payload')
 
     await page.goto('/')
-    await expect(page).toHaveTitle(/Node Modules Inspector/)
+    await expect(page).toHaveTitle(/Cargo Deps Inspector/)
   })
 
   test('renders the inspector UI from the prebuilt RPC dump', async ({ page }) => {

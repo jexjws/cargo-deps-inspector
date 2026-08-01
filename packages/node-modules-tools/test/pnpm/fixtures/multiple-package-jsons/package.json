@@ -1,8 +1,0 @@
-{
-  "name": "parent-package-json",
-  "private": true,
-  "dependencies": {
-    "child-package-json": "workspace:*",
-    "vitest": "catalog:testing"
-  }
-}

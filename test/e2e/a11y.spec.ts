@@ -10,8 +10,7 @@ type Mode = 'light' | 'dark'
 
 const MODES: Mode[] = ['light', 'dark']
 
-// The five nav-rail routes (see `packages/node-modules-inspector/src/app/components/panel/Nav.vue`).
-const PAGES = ['/grid/depth', '/graph', '/chart', '/report', '/compare'] as const
+const PAGES = ['/grid/depth', '/graph', '/chart/treemap', '/report/source-size', '/compare'] as const
 
 const navLink = (href: string) => `a[href^="${href}"]`
 
@@ -41,13 +40,7 @@ async function ensureMode(page: Page, mode: Mode): Promise<void> {
 async function scanContrast(page: Page): Promise<AxeResults> {
   return new AxeBuilder({ page })
     .withRules(['color-contrast'])
-    // Shiki-highlighted code uses intentional token palettes.
-    .exclude('.shiki')
-    // Escape hatch for known-decorative content (graph/chart SVGs etc).
     .exclude('[data-a11y-skip]')
-    // xterm renders to canvas with injected styles we don't control.
-    .exclude('.xterm')
-    .exclude('.xterm-rows')
     .analyze()
 }
 
@@ -79,42 +72,14 @@ for (const mode of MODES) {
     })
   }
 
-  test(`a11y: settings panel has no color-contrast violations in ${mode} mode`, async ({ page }) => {
-    await setMode(page, mode)
-    await gotoAndReady(page, '/grid/depth')
-    await ensureMode(page, mode)
-
-    await page.locator('button[title="Settings"]').click()
-    // PanelSettings renders OptionItem rows. Wait for the first known label.
-    await expect(page.getByText('Simplify module types')).toBeVisible()
-
-    const results = await scanContrast(page)
-    expect.soft(results.violations, formatViolations(results)).toEqual([])
-  })
-
-  test(`a11y: filters panel has no color-contrast violations in ${mode} mode`, async ({ page }) => {
-    await setMode(page, mode)
-    await gotoAndReady(page, '/grid/depth')
-    await ensureMode(page, mode)
-
-    await page.locator('button[title="Filters"]').click()
-    await expect(page.getByText(/Filters/i).first()).toBeVisible()
-
-    const results = await scanContrast(page)
-    expect.soft(results.violations, formatViolations(results)).toEqual([])
-  })
-
   test(`a11y: package details has no color-contrast violations in ${mode} mode`, async ({ page }) => {
     await setMode(page, mode)
     await gotoAndReady(page, '/grid/depth')
     await ensureMode(page, mode)
 
-    // Grid items render UiPackageBorder as `<button class="... border rounded-lg bg-base">`.
-    // Pick the first one inside the first open <details> group.
-    const item = page.locator('details[open] button.rounded-lg').first()
+    const item = page.locator('.crate-card').first()
     await item.click()
-    // Selecting a package mounts PanelPackageDetails inside the side panel.
-    await expect(page.locator('details[open] button.rounded-lg.ring-3, details[open] button.rounded-lg[class*="ring-primary"]').first()).toBeVisible()
+    await expect(page.locator('.details-drawer')).toBeVisible()
 
     const results = await scanContrast(page)
     expect.soft(results.violations, formatViolations(results)).toEqual([])

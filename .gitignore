@@ -6,10 +6,10 @@ dist
 .env
 .idea/
 .DS_Store
-.node-modules-inspector
-packages/node-modules-inspector/src/app/public/fonts
-packages/node-modules-inspector/src/public/fonts
-packages/node-modules-inspector/runtime
+.cargo-deps-inspector
+packages/cargo-deps-inspector/src/app/public/fonts
+packages/cargo-deps-inspector/src/public/fonts
+packages/cargo-deps-inspector/runtime
 .vite-inspect
 .ghfs
 test/e2e/.fixtures
@@ -20,4 +20,4 @@ playwright-report
 **/skills/npm-*
 
 # Copied at publish time from root /skills/ by scripts/copy-skills.mjs
-packages/node-modules-inspector/skills/
+packages/cargo-deps-inspector/skills/

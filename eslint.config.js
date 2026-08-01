@@ -1,19 +1,19 @@
 // @ts-check
 import antfu from '@antfu/eslint-config'
-import nuxt from './packages/node-modules-inspector/src/.nuxt/eslint.config.mjs'
+import nuxt from './packages/cargo-deps-inspector/src/.nuxt/eslint.config.mjs'
 
 export default antfu({
   pnpm: true,
 })
   .append(nuxt())
   .append({
-    files: ['packages/node-modules-inspector/src/node/**/*.ts'],
+    files: ['packages/cargo-deps-inspector/src/node/**/*.ts'],
     rules: {
       'no-console': 'off',
     },
   })
   .append({
-    files: ['packages/node-modules-tools/test/*/fixtures/**/package.json'],
+    files: ['packages/cargo-deps-tools/test/*/fixtures/**/package.json'],
     rules: {
       'pnpm/json-enforce-catalog': 'off',
       'pnpm/json-valid-catalog': 'off',

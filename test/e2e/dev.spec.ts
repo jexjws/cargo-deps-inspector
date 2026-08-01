@@ -1,11 +1,7 @@
 import { expect, test } from '@playwright/test'
 
-// "Dev mode" = the live `node-modules-inspector` CLI. The HTTP server hosts the
-// built dist and a websocket backend that streams the current repo's
-// node_modules. The default route redirects to /grid/depth.
-
-// floating-vue's `v-tooltip` strips the native `title` attribute, so we locate
-// the nav rail by href instead — it's the only stable handle in production.
+// "Dev mode" = the live `cargo-deps-inspector` CLI. The HTTP server hosts the
+// built SPA and a websocket backend that resolves the Cargo fixture.
 const navLink = (href: string) => `a[href^="${href}"]`
 
 test.describe('dev mode (CLI + websocket backend)', () => {
@@ -13,7 +9,7 @@ test.describe('dev mode (CLI + websocket backend)', () => {
     await page.goto('/')
 
     await expect(page).toHaveURL(/\/grid\//, { timeout: 30_000 })
-    await expect(page).toHaveTitle(/Node Modules Inspector/)
+    await expect(page).toHaveTitle(/Cargo Deps Inspector/)
 
     // Nav rail mounts only after the websocket backend is connected and the
     // payload has loaded.

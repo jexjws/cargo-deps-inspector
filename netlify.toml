@@ -1,16 +1,9 @@
 [build]
-publish = "packages/node-modules-inspector/dist/public"
-command = "pnpm run wc:build"
+publish = "packages/cargo-deps-inspector/dist/public"
+command = "pnpm run online:build"
 
 [build.environment]
 NODE_VERSION = "22"
-
-[[headers]]
-for = "/*"
-
-[headers.values]
-Cross-Origin-Embedder-Policy = "require-corp"
-Cross-Origin-Opener-Policy = "same-origin"
 
 [[redirects]]
 from = "/*"

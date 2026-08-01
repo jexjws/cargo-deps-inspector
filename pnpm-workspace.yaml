@@ -34,15 +34,10 @@ patchedDependencies:
 
 catalogs:
   bundling:
-    '@rollup/plugin-alias': ^6.0.0
-    '@rollup/plugin-commonjs': ^29.0.3
-    '@rollup/plugin-node-resolve': ^16.0.3
     '@unocss/nuxt': ^66.7.5
     '@vueuse/nuxt': ^14.4.0
-    esbuild: ^0.28.1
     nuxt: npm:nuxt-nightly@5x
     rollup: ^4.62.3
-    rollup-plugin-esbuild: ^6.2.1
     unbuild: ^3.6.1
     vite: ^8.2.0
   deps:
@@ -50,23 +45,14 @@ catalogs:
     ansis: ^4.3.1
     cac: ^7.0.0
     devframe: *devframe
-    fast-npm-meta: ^2.2.0
     get-port-please: ^3.2.0
     h3: ^2.0.1-rc.26
-    js-yaml: ^5.2.2
-    launch-editor: ^2.14.1
     ohash: ^2.0.11
-    open: ^11.0.0
     p-limit: ^7.3.1
-    package-manager-detector: ^1.8.0
     pathe: ^2.0.3
-    publint: ^0.3.22
-    stream-json: ^3.5.0
-    structured-clone-es: ^2.0.1
     tinyexec: ^1.2.4
     tinyglobby: ^0.2.17
     unconfig: ^7.5.0
-    unstorage: ^1.17.5
     valibot: ^1.4.2
     verkit: ^0.3.1
   dev:
@@ -78,19 +64,14 @@ catalogs:
     vite-plugin-inspect: ^12.0.2
     vue-tsc: ^3.3.8
   frontend:
-    '@webcontainer/api': ^1.6.4
-    '@xterm/addon-fit': ^0.11.0
-    '@xterm/xterm': ^6.0.0
     d3: ^7.9.0
     d3-hierarchy: ^3.1.2
     d3-shape: ^3.2.0
     floating-vue: ^5.2.2
     fuse.js: ^7.5.0
-    idb-keyval: ^6.3.0
     modern-screenshot: ^4.7.0
     nanovis: ^1.0.0
     theme-vitesse: ^1.0.0
-    vite-hot-client: ^2.2.0
   icons:
     '@iconify-json/carbon': ^1.2.24
     '@iconify-json/catppuccin': ^1.2.17
@@ -112,18 +93,10 @@ catalogs:
   testing:
     '@axe-core/playwright': ^4.12.1
     '@playwright/test': ^1.62.1
-    '@valibot/to-json-schema': ^1.7.1
-    mlly: ^1.8.2
-    type-fest: 4.41.0
     vitest: ^4.1.10
   types:
-    '@pnpm/list': ^1000.3.4
-    '@pnpm/types': ^1101.7.0
     '@types/d3': ^7.4.3
     '@types/d3-hierarchy': ^3.1.7
-    '@types/js-yaml': ^4.0.9
-    '@types/stream-json': ^1.7.8
-    pkg-types: ^2.3.1
 allowBuilds:
   '@parcel/watcher': true
   esbuild: true
