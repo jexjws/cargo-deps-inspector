@@ -37,4 +37,21 @@ test.describe('dev mode (CLI + websocket backend)', () => {
     await page.locator(navLink('/chart')).first().click()
     await expect(page).toHaveURL(/\/chart/)
   })
+
+  test('removes an excluded crate and its transitive dependencies from the graph', async ({ page }) => {
+    await page.goto('/graph')
+    await expect(page.locator(navLink('/grid')).first()).toBeVisible({ timeout: 30_000 })
+
+    const graphNode = (name: string) => page.locator('.graph-node', { hasText: name })
+    await expect(graphNode('serde_json@1.0.151')).toHaveCount(1)
+    await expect(graphNode('itoa@1.0.18')).toHaveCount(1)
+    await expect(graphNode('anyhow@1.0.104')).toHaveCount(1)
+
+    await graphNode('serde_json@1.0.151').click()
+    await page.getByRole('button', { name: 'Exclude', exact: true }).click()
+
+    await expect(graphNode('serde_json@1.0.151')).toHaveCount(0)
+    await expect(graphNode('itoa@1.0.18')).toHaveCount(0)
+    await expect(graphNode('anyhow@1.0.104')).toHaveCount(1)
+  })
 })

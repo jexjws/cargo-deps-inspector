@@ -3,6 +3,7 @@ import { satisfies } from 'verkit'
 export interface PackageNodeLike {
   name: string
   version: string
+  packageId?: string
 }
 
 /**
@@ -12,6 +13,7 @@ export interface PackageNodeLike {
  * - serde or serde@* -> Any version of the crate
  * - tokio@^1.0 -> Any version matching the range
  * - cargo-* -> Any crate matching the wildcard
+ * - registry+https://github.com/rust-lang/crates.io-index#serde@1.0.0 -> Exact Cargo package ID
  */
 export function constructPackageFilter(range: string): (pkg: PackageNodeLike) => boolean {
   const separator = range.lastIndexOf('@')
@@ -23,6 +25,9 @@ export function constructPackageFilter(range: string): (pkg: PackageNodeLike) =>
     : name
 
   return (pkg) => {
+    if (pkg.packageId === range)
+      return true
+
     const isNameMatch = nameMatch instanceof RegExp ? nameMatch.test(pkg.name) : pkg.name === name
     let isVersionMatch = version === '*' || pkg.version === version
     if (!isVersionMatch) {

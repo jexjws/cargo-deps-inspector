@@ -8,6 +8,18 @@ describe('constructPackageFilter', () => {
     expect(filter({ name: 'foo', version: '2.0.0' })).toBe(false)
   })
 
+  it('exact Cargo package ID', () => {
+    const packageId = 'registry+https://github.com/rust-lang/crates.io-index#serde_json@1.0.151'
+    const filter = constructPackageFilter(packageId)
+
+    expect(filter({ name: 'serde_json', version: '1.0.151', packageId })).toBe(true)
+    expect(filter({
+      name: 'serde_json',
+      version: '1.0.151',
+      packageId: 'registry+https://example.com/index#serde_json@1.0.151',
+    })).toBe(false)
+  })
+
   it('exact with scope', () => {
     const filter = constructPackageFilter('@foo/bar@1.0.0')
     expect(filter({ name: '@foo/bar', version: '1.0.0' })).toBe(true)
