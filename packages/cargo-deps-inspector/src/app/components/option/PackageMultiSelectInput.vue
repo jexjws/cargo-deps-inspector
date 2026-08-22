@@ -2,6 +2,8 @@
 import type { PackageNode } from 'cargo-deps-tools'
 import type { ComputedPayload } from '../../state/payload'
 import { ref } from 'vue'
+import TreeItem from '../tree/Item.vue'
+import OptionPackageSelect from './PackageSelect.vue'
 
 defineProps<{
   payload?: ComputedPayload

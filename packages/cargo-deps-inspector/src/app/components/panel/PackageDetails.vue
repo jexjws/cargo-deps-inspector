@@ -5,6 +5,16 @@ import { filters } from '../../state/filters'
 import { payloads } from '../../state/payload'
 import { query } from '../../state/query'
 import { settings } from '../../state/settings'
+import DisplayClusterBadge from '../display/ClusterBadge.vue'
+import DisplayDeprecationMessage from '../display/DeprecationMessage.vue'
+import DisplayFileSizeBadge from '../display/FileSizeBadge.vue'
+import IntegrationsPublintCounts from '../integrations/PublintCounts.vue'
+import TreeDependencies from '../tree/Dependencies.vue'
+import UiPercentageFileCategories from '../ui/PercentageFileCategories.vue'
+import UiPercentageModuleType from '../ui/PercentageModuleType.vue'
+import UiPercentageProvenance from '../ui/PercentageProvenance.vue'
+import PanelMaintainerActionTypePill from './MaintainerActionTypePill.vue'
+import PanelPackageDetailsInfo from './PackageDetailsInfo.vue'
 
 const props = defineProps<{ pkg: PackageNode }>()
 const isExcluded = computed(() => payloads.excluded.has(props.pkg))

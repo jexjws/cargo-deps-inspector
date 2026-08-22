@@ -2,6 +2,7 @@
 import type { PackageNode } from 'cargo-deps-tools'
 import type { HighlightMode } from '../../state/highlight'
 import { selectedNode } from '../../state/current'
+import UiPackageBorder from '../ui/PackageBorder.vue'
 
 defineProps<{
   pkg: PackageNode
