@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'cargo-deps-tools'
 import { computed } from 'vue'
-import DisplayClusterBadge from '../display/ClusterBadge.vue'
-import RenderNextTick from '../RenderNextTick'
-import TreeDependencies from './Dependencies.vue'
-import TreeItem from './Item.vue'
 
 const props = withDefaults(defineProps<{
   currents?: PackageNode[]

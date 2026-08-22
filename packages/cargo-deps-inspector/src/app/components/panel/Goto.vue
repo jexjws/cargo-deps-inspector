@@ -2,7 +2,6 @@
 import type { PackageNode } from 'cargo-deps-tools'
 import { ref, useTemplateRef } from 'vue'
 import { selectedNode } from '../../state/current'
-import OptionPackageSelect from '../option/PackageSelect.vue'
 
 const input = ref('')
 

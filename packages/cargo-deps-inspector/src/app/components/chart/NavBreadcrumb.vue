@@ -3,7 +3,6 @@ import type { PackageNode } from 'cargo-deps-tools'
 import type { GraphBaseOptions } from 'nanovis'
 import type { ChartNode } from '../../types/chart'
 import { computed } from 'vue'
-import DisplayPackageSpec from '../display/PackageSpec.vue'
 
 const props = defineProps<{
   selected?: ChartNode

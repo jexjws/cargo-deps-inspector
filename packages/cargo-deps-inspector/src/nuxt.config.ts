@@ -29,21 +29,6 @@ export default defineNuxtConfig({
   logLevel: 'verbose',
   srcDir: 'app',
 
-  // Components are explicitly imported everywhere, so directory scanning/global registration
-  // is disabled. Nuxt's own built-ins (NuxtLink, NuxtLayout, NuxtPage, …) are
-  // registered independently of this and remain available via `#components`.
-  components: {
-    dirs: [],
-  },
-
-  // Composables/utils (`app/composables`, `app/utils`) are explicitly imported
-  // everywhere; disable Nuxt's auto-import transform. `nuxt-eslint-auto-explicit-import`
-  // (see `modules` above) still auto-inserts the right import via `eslint --fix`
-  // if one is ever forgotten.
-  imports: {
-    autoImport: false,
-  },
-
   eslint: {
     config: {
       standalone: false,
