@@ -11,13 +11,13 @@ const selected = computed(() => {
   return value || 'all'
 })
 const tabs = computed(() => [
+  { path: '', label: t('reports.all'), icon: 'i-ph-grid-four-duotone' },
   { path: 'dependencies', label: t('reports.relationships'), icon: 'i-ph-link-simple-duotone' },
   { path: 'source-size', label: t('reports.sourceSize'), icon: 'i-ph-hard-drives-duotone' },
   { path: 'duplicates', label: t('reports.duplicates'), icon: 'i-ph-copy-duotone' },
   { path: 'licenses', label: t('reports.licenses'), icon: 'i-ph-scales-duotone' },
   { path: 'audit', label: 'RustSec', icon: 'i-ph-shield-warning-duotone' },
   { path: 'outdated', label: t('reports.outdated'), icon: 'i-ph-clock-counter-clockwise-duotone' },
-  { path: '', label: t('reports.all'), icon: 'i-ph-grid-four-duotone' },
 ])
 </script>
 
