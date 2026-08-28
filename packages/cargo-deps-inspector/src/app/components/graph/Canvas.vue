@@ -44,8 +44,8 @@ const ZOOM_MAX = 2
 const { control } = useMagicKeys()
 const { scale, zoomIn, zoomOut } = useZoomElement(container, {
   wheel: control,
-  minScale: ZOOM_MIN,
-  maxScale: ZOOM_MAX,
+  scaleMin: ZOOM_MIN,
+  scaleMax: ZOOM_MAX,
 })
 
 onKeyPressed(['-', '_'], (e) => {
