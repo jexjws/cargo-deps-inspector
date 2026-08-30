@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PackageNode } from 'cargo-deps-tools'
-import type { GraphBase, GraphBaseOptions } from 'nanovis'
+import type { GraphBase, GraphBaseOptions, TreeNode } from 'nanovis'
 import type { ChartNode } from '../../types/chart'
 import { partition } from '@antfu/utils'
 import { useMouse } from '@vueuse/core'
@@ -141,6 +141,29 @@ const tree = computed(() => {
 
 let dispose: () => void | undefined
 
+const spectrum = computed(() => createColorGetterSpectrum(
+  tree.value.root,
+  isDark.value ? 0.8 : 0.9,
+  isDark.value ? 1 : 1.1,
+))
+
+function getColor(node: TreeNode<PackageNode | undefined>) {
+  if (settings.value.chartColoringMode === 'source') {
+    if (!node.meta)
+      return undefined
+    switch (node.meta.sourceKind) {
+      case 'workspace': return '#84cc16'
+      case 'path': return '#06b6d4'
+      case 'registry': return '#6366f1'
+      case 'git': return '#a855f7'
+      default: return '#888888'
+    }
+  }
+  return spectrum.value(node)
+}
+
+const treemap = shallowRef<Treemap<PackageNode | undefined> | undefined>(undefined)
+
 const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
   return {
     onClick(node) {
@@ -166,23 +189,7 @@ const options = computed<GraphBaseOptions<PackageNode | undefined>>(() => {
       fg: isDark.value ? '#fff' : '#000',
       bg: isDark.value ? '#111' : '#fff',
     },
-    getColor: settings.value.chartColoringMode === 'source'
-      ? (node) => {
-          if (!node.meta)
-            return undefined
-          switch (node.meta.sourceKind) {
-            case 'workspace': return '#84cc16'
-            case 'path': return '#06b6d4'
-            case 'registry': return '#6366f1'
-            case 'git': return '#a855f7'
-            default: return '#888888'
-          }
-        }
-      : createColorGetterSpectrum(
-          tree.value.root,
-          isDark.value ? 0.8 : 0.9,
-          isDark.value ? 1 : 1.1,
-        ),
+    getColor,
     getSubtext: (node) => {
       if (!node.meta)
         return node.subtext
@@ -215,11 +222,14 @@ watch(
       case 'flamegraph':
         graph.value = new Flamegraph(tree.value.root, options.value)
         break
-      default:
-        graph.value = new Treemap(tree.value.root, {
+      default: {
+        const tm = new Treemap(tree.value.root, {
           ...options.value,
           selectedPaddingRatio: 0,
         })
+        treemap.value = tm
+        graph.value = tm
+      }
     }
 
     nextTick(() => {
@@ -242,7 +252,7 @@ watch(
 watch(
   () => settings.value.chartColoringMode,
   () => {
-    graph.value?.draw()
+    graph.value?.invalidate()
   },
 )
 
