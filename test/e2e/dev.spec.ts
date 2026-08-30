@@ -8,7 +8,7 @@ test.describe('dev mode (CLI + websocket backend)', () => {
   test('serves the inspector and connects to the live backend', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page).toHaveURL(/\/grid\//, { timeout: 30_000 })
+    await expect(page).toHaveURL(/\/report/, { timeout: 30_000 })
     await expect(page).toHaveTitle(/Cargo Deps Inspector/)
 
     // Nav rail mounts only after the websocket backend is connected and the
